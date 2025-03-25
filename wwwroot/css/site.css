@@ -1,0 +1,359 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+/* Hero Section */
+.hero-section {
+    background: url('https://www.nextgearcapital.com/wp-content/uploads/sites/2/2020/04/Dollarphotoclub_85133296.jpg') no-repeat center center/cover;
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin-bottom: 20px;
+}
+.hero-content h2 {
+    font-size: 25px;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.hero-buttons .btn {
+    margin: 10px;
+
+}
+
+/* Featured Cars Section */
+.featured-cars {
+    padding: 50px 0;
+    text-align: center;
+    overflow: hidden; /* Hide overflow to create a seamless loop */
+}
+
+.carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-prev,
+.carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
+
+/*.carousel:hover .carousel-track {
+    animation-play-state: paused;
+}*/
+
+.carousel-track {
+    display: flex;
+    animation: slide 20s linear infinite; /* Adjust speed as needed */
+}
+
+.car-card {
+    flex: 0 0 300px; /* Fixed width for each car card */
+    margin: 0 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+    .car-card img {
+        width: 100%;
+        height: 200px;
+        width: 300px;
+
+        border-radius: 10px;
+    }
+
+/* Animation for sliding */
+@keyframes slide {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%); /* Move the track by half its width */
+    }
+}
+/* Why Choose Us */
+.why-choose-us {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.benefits-grid {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.benefit-card {
+    width: 30%;
+    margin: 20px 0;
+}
+
+    .benefit-card i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+/* Testimonials */
+.testimonials {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.testimonials-grid {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.testimonial-card {
+    width: 45%;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+    .testimonial-card img {
+        width: 80px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+
+/* Footer */
+.footer {
+    background: #333;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer-links a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.social-media a {
+    color: white;
+    margin: 0 10px;
+    font-size: 1.5rem;
+}
+/* Catalogue Page */
+.catalogue-container {
+    display: flex;
+    gap: 30px;
+    padding: 20px;
+}
+
+.filter-sidebar {
+    width: 300px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+    .filter-section h5 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+.category-options .form-check {
+    margin-bottom: 8px;
+}
+
+.price-range {
+    padding: 0 10px;
+}
+
+.price-values {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.cars-listing {
+    flex: 1;
+}
+
+.sorting-options {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.sort-by {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.car-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+    .car-card:hover {
+        transform: translateY(-5px);
+    }
+
+.car-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.car-details {
+    padding: 15px;
+}
+
+.car-specs {
+    display: flex;
+    gap: 15px;
+    margin: 10px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.car-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+    .car-price span {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+/* Review Section */
+.reviews-section {
+    padding: 50px 0;
+    background: #f8f9fa;
+}
+
+.reviews-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.review-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: bold;
+}
+
+.rating {
+    color: #ffc107;
+    font-size: 18px;
+}
+
+.review-date {
+    color: #666;
+    font-size: 14px;
+}
+
+.review-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 30px;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        font-size: 24px;
+        color: #ddd;
+        cursor: pointer;
+        padding: 0 5px;
+    }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+        }

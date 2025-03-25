@@ -1,0 +1,30 @@
+﻿@model CarRental3._0.Models.Car
+
+@{
+    ViewData["Title"] = "Car Details";
+}
+
+<div class="container">
+    <h1>@Model.Brand @Model.Model</h1>
+    <img height="700px" width ="420px" src="@Model.Image" alt="Image of the car" class="img-fluid" />
+    <p>Daily Rate: @Model.DailyRate лв./ден</p>
+    <p>Status: @Model.Status</p>
+
+    <!-- Rent Form -->
+    <h2>Rent This Car</h2>
+    <form asp-action="Rent" method="post">
+        <input type="hidden" name="CarId" value="@Model.CarId" />
+
+        <div class="form-group">
+            <label for="RentalDate">Start Date</label>
+            <input type="date" name="RentalDate" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="ReturnDate">End Date</label>
+            <input type="date" name="ReturnDate" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Rent</button>
+    </form>
+</div>
