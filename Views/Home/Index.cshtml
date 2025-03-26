@@ -1,145 +1,12 @@
-﻿@model IEnumerable<Car>
-@using CarRental3._0.Data
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
-<section class="hero-section">
-    <div class="container">
-        <div class="hero-content">
-            <h1>
-                Наемете Перфектната Кола за Вашето Пътуване
-            </h1>
-            <h2>
-                Разгледайте нашата широка гама от автомобили на ненадминати цени.
-            </h2>
-            <div class="hero-buttons">
-                <a href="/Car/Index" class="btn btn-primary">Наеми сега</a>
-                <a href="/About" class="btn btn-secondary">Научи повече</a>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="featured-cars">
-    <div class="container">
-        <h2>
-            Препоръчани Автомобили
-        </h2>
-        <div class="carousel">
-            <button class="carousel-prev">&#10094;</button>
-            <button class="carousel-next">&#10095;</button>
-            <div class="carousel-track">
-                <!-- Car Cards will be dynamically added here -->
-            </div>
-        </div>
-    </div>
-</section>
 
-<script>
-        document.addEventListener("DOMContentLoaded", function () {
-        const carouselTrack = document.querySelector(".carousel-track");
-        const prevButton = document.querySelector(".carousel-prev");
-        const nextButton = document.querySelector(".carousel-next");
-
-        const carCards = [{image: "https://prod.cosy.bmw.cloud/bmwweb/cosySec?COSY-EU-100-7331rjFhnOqIbqcTZ%25L3hpvYLfCny2oWYgpnQ97lX80UrOohZkVAfS5cVLNHCLvhJP%25z6eEzFu4fXBjvWzmQltE6BmudhSId4k9VTCrmpIUrOrJrhDGwXHi4T4qF9%25rJHFlFe6ou4TJIsIUzL3FlTv0VliyXIslGAzWECrv0s9OaRBE4GA0ogRwlNF9OALUxnXkIogOybW5KnvLUgChe2B5GybUEqjpx89ChbNmQtiPoEqhk7ZnHMLNmqn1cmaDyk7m5VKGPYCn178zB3vtE5V1Pa28mfN8zVMRpoMSkPazDxTKAdnMRaYWlALQ5DxRtesOwZ8YWxfj0gKcPteWS6AdaKMfjedwOQNBDS6jQ%25gZp2Ydw6ZuUNfptQ%25wc3bnFifZu%25KXh5JHSc3uBrq9YJdKX324mIKTQBrXpF7CAlZ24riI15ascpF4HvVAA0KiIFJGz7xABHvIT9a1nO2JGvloILUgpT9GsLvS6Uilo90yG10bHsLoAC9VshJ0yLOEozxqTACygNLpfmlOECUkaKH7sgNEbnR2V10UkNh5xWqVAbnkq8WeszOh5nmPej4agq857MjK0RUmP81D6psxb7MPVYws5Wh1DMzt%25r0eqVYDafu46jmztYRSaLP67aftxdRyww1RSfWQxDD%25VxdSeZWCuuzWQdjceTE3aeZQ6KjPpXRjcZwBZvHrx6Kc%252cqJ4WwBKupK5jFe%252B3iBucIjup2XH2fwv63iprJp9eGwXHi4TfF99%25UHNMClix2t5JUABNItPb9FSrTLn9lVc%25s6l89RpC0vQFju1dWS2aOIXRTVcwL9cvtT7672yzH3OYgMTN6uQmlDTI0Ccy2of4Y",name: "BMW X5",price: "$120/day",link: "/Car/Detail/1"},{image: "https://kong-proxy-intranet.toyota-europe.com/c1-images/resize/ccis/680x680/zip/bg/product-token/0c77ac68-d19e-4c1b-b714-b48f1d0a803b/vehicle/ba27962c-39a3-471d-a59b-9ba1938ea8eb/padding/50,50,50,50/image-quality/70/day-exterior-04_4y6.png",name: "Toyota Camry",price: "$50/day",link: "/Car/Detail/2"},{image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQle7rOjsAdhTfpggSwLzKnflAShadVzCWb7Q&s",name: "Ford Transit",price: "$60/day",link: "/Car/Detail/3"},{image: "https://platform.cstatic-images.com/in/v2/stock_photos/c4359896-c20e-46da-87a2-a7b2734561b3/c0535e58-31b9-488d-b5b7-55818402e3e6.png",name: "Audi A4",price: "$120/day",link: "/Car/Detail/4"}];
-
-        // Function to create a car card
-        function createCarCard(car) {
-            return `
-                <div class="car-card">
-                    <img src="${car.image}" alt="${car.name}">
-                    <h3>${car.name}</h3>
-                    <p>${car.price}</p>
-                    <a href="${car.link}" class="btn btn-primary">Rent Now</a>
-                </div>
-            `;
-        }
-
-        // Duplicate the car cards to create an infinite loop
-        const carouselContent = carCards.map(createCarCard).join("");
-        carouselTrack.innerHTML = carouselContent + carouselContent; // Duplicate content
-
-        // Handle previous button click
-        prevButton.addEventListener("click", () => {
-            carouselTrack.style.transform = "translateX(-50%)";
-        });
-
-        // Handle next button click
-        nextButton.addEventListener("click", () => {
-            carouselTrack.style.transform = "translateX(0)";
-        });
-    });
-    // Handle review form submission
-document.getElementById('reviewForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const formData = new FormData(form);
-    const data = {
-        Comment: formData.get('Comment'),
-        Rating: parseInt(formData.get('Rating'))
-    };
-
-    try {
-        const response = await fetch('/Review/Create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            document.getElementById('reviewSuccess').textContent = result.message;
-            document.getElementById('reviewSuccess').style.display = 'block';
-            form.reset();
-            
-            // Reload reviews after 2 seconds
-            setTimeout(() => {
-                location.reload();
-            }, 2000);
-        } else {
-            const error = await response.json();
-            alert(error.message || 'Грешка при изпращане на отзива');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Възникна грешка при изпращане на отзива');
-    }
-});
-</script>
-
-
-<section class="why-choose-us">
-    <div class="container">
-        <h2>Защо да изберете нас?</h2>
-        <div class="benefits-grid">
-            <div class="benefit-card">
-                <i class="fas fa-tag"></i>
-                <h3> Достъпни Цени</h3>
-                <p>
-                    Получете най-добрите оферти за коли под наем.
-                </p>
-            </div>
-            <div class="benefit-card">
-                <i class="fas fa-car"></i>
-                <h3>Голям Избор</h3>
-                <p>Изберете от разнообразие от автомобили.</p>
-            </div>
-            <div class="benefit-card">
-                <i class="fas fa-headset"></i>
-                <h3>24/7 Support</h3>
-                <p>Винаги сме на разположение да ви помогнем.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!--Reviews-->
+<!-- Your existing hero section and other content -->
+<!-- Reviews Section -->
 <section class="reviews-section">
     <div class="container">
-        <h2>Отзиви от нашите клиенти</h2>
+        <h2>Customer Reviews</h2>
         <div class="reviews-container">
             <!-- Top Reviews will be loaded here -->
             <div id="topReviews"></div>
@@ -148,82 +15,197 @@ document.getElementById('reviewForm')?.addEventListener('submit', async function
             @if (User.Identity.IsAuthenticated)
             {
                 <div class="review-form">
-                    <h3>Напишете вашето мнение</h3>
+                    <h3>Leave Your Review</h3>
                     <form id="reviewForm">
+                        @Html.AntiForgeryToken()
                         <div class="form-group">
-                            <label>Оценка:</label>
+                            <label>Rating:</label>
                             <div class="star-rating">
                                 <input type="radio" id="5-stars" name="Rating" value="5" checked />
-                                <label for="5-stars" class="star">&#9733;</label>
+                                <label for="5-stars" class="star">★</label>
                                 <input type="radio" id="4-stars" name="Rating" value="4" />
-                                <label for="4-stars" class="star">&#9733;</label>
+                                <label for="4-stars" class="star">★</label>
                                 <input type="radio" id="3-stars" name="Rating" value="3" />
-                                <label for="3-stars" class="star">&#9733;</label>
+                                <label for="3-stars" class="star">★</label>
                                 <input type="radio" id="2-stars" name="Rating" value="2" />
-                                <label for="2-stars" class="star">&#9733;</label>
+                                <label for="2-stars" class="star">★</label>
                                 <input type="radio" id="1-star" name="Rating" value="1" />
-                                <label for="1-star" class="star">&#9733;</label>
+                                <label for="1-star" class="star">★</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <textarea name="Comment" class="form-control" placeholder="Вашият отзив..." required></textarea>
+                            <textarea name="Comment" class="form-control" placeholder="Your review..." required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Изпрати</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                     <div id="reviewSuccess" class="alert alert-success mt-3" style="display:none;"></div>
                 </div>
             }
             else
             {
-                <p>Моля, <a href="/Account/Login">влезте</a> в профила си, за да оставите отзив.</p>
+                <p>Please <a href="/Account/Login">login</a> to leave a review.</p>
             }
         </div>
     </div>
 </section>
 
-<script>
-    // Load top reviews
-    fetch('/Review/GetTopReviews')
-        .then(response => response.json())
-        .then(reviews => {
-            const container = document.getElementById('topReviews');
-            reviews.forEach(review => {
-                container.innerHTML += `
-                    <div class="review-card">
-                        <div class="review-header">
-                            <div class="user-info">
-                                <span class="user-name">${review.user.fullName}</span>
-                                <div class="rating">
-                                    ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+@section Styles {
+    <style>
+        .reviews-section {
+            padding: 50px 0;
+            background: #f8f9fa;
+        }
+
+        .reviews-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .review-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-size: 18px;
+        }
+
+        .review-date {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .review-content p {
+            margin: 0;
+        }
+
+        .review-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 24px;
+            color: #ddd;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Load top reviews
+        function loadReviews() {
+            fetch('/Review/GetTopReviews')
+                .then(response => response.json())
+                .then(reviews => {
+                    const container = document.getElementById('topReviews');
+                    container.innerHTML = '';
+
+                    reviews.forEach(review => {
+                        container.innerHTML += `
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="user-info">
+                                        <span class="user-name">${review.user.fullName}</span>
+                                        <div class="rating">
+                                            ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                                        </div>
+                                    </div>
+                                    <span class="review-date">${new Date(review.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <div class="review-content">
+                                    <p>${review.comment}</p>
                                 </div>
                             </div>
-                            <span class="review-date">${new Date(review.createdAt).toLocaleDateString()}</span>
-                        </div>
-                        <div class="review-content">
-                            <p>${review.comment}</p>
-                        </div>
-                    </div>
-                `;
-            });
+                        `;
+                    });
+                });
+        }
+
+        // Handle review form submission
+        document.getElementById('reviewForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = {
+                Comment: formData.get('Comment'),
+                Rating: parseInt(formData.get('Rating'))
+            };
+
+            try {
+                const response = await fetch('/Review/Create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const successDiv = document.getElementById('reviewSuccess');
+                    successDiv.textContent = result.message;
+                    successDiv.style.display = 'block';
+                    form.reset();
+
+                    // Reload reviews after 2 seconds
+                    setTimeout(() => {
+                        loadReviews();
+                        successDiv.style.display = 'none';
+                    }, 2000);
+                } else {
+                    const error = await response.json();
+                    alert(error.message || 'Error submitting review');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while submitting your review');
+            }
         });
-</script>
-<footer class="footer">
-<div class="container">
-    <div class="footer-links">
-        <a href="/">Начало</a>
-        <a href="/About">За нас</a>
-        <a href="/Contact">Контакти</a>
-        <a href="/Privacy">Политика за поверителност</a>
-    </div>
-    <div class="social-media">
-        <a href="#"><i class="fab fa-facebook"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-    </div>
-    <div class="contact-info">
-            <p>Адрес: 123 Car Rental Street, София, България</p>
-            <p>Телефон: +359 123 456 789</p>
-        <p>Email: info@carrental.com</p>
-    </div>
-</div>
-</footer>
+
+        // Load reviews on page load
+        document.addEventListener("DOMContentLoaded", loadReviews);
+    </script>
+}

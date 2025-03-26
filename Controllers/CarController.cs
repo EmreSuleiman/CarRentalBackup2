@@ -71,6 +71,7 @@ namespace CarRental3._0.Controllers
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
             ViewBag.MaxPrice = maxPrice;
+            ViewBag.SortBy = sortBy;
 
             IEnumerable<Car> cars = await _carRepository.GetAll();
 
@@ -80,7 +81,7 @@ namespace CarRental3._0.Controllers
                 cars = await _carRepository.GetAvailableCarsAsync(startDate.Value, endDate.Value);
             }
 
-            // Apply category filter
+            // Apply category filter (now using Bulgarian values)
             if (!string.IsNullOrEmpty(category))
             {
                 cars = cars.Where(c => c.Category.ToString() == category);
@@ -90,21 +91,14 @@ namespace CarRental3._0.Controllers
             cars = cars.Where(c => c.DailyRate <= maxPrice);
 
             // Apply sorting
-            switch (sortBy)
+            cars = sortBy switch
             {
-                case "price_asc":
-                    cars = cars.OrderBy(c => c.DailyRate);
-                    break;
-                case "price_desc":
-                    cars = cars.OrderByDescending(c => c.DailyRate);
-                    break;
-                case "year_asc":
-                    cars = cars.OrderBy(c => c.Year);
-                    break;
-                case "year_desc":
-                    cars = cars.OrderByDescending(c => c.Year);
-                    break;
-            }
+                "price_asc" => cars.OrderBy(c => c.DailyRate),
+                "price_desc" => cars.OrderByDescending(c => c.DailyRate),
+                "year_asc" => cars.OrderBy(c => c.Year),
+                "year_desc" => cars.OrderByDescending(c => c.Year),
+                _ => cars.OrderBy(c => c.CarId) // Default sorting
+            };
 
             return View(cars.ToList());
         }
