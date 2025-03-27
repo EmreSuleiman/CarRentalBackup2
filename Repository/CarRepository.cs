@@ -36,6 +36,13 @@ namespace CarRental3._0.Repository
         {
             return await _context.Cars.ToListAsync();
         }
+        public async Task<IEnumerable<Car>> GetFeaturedCars(int count)
+        {
+            return await _context.Cars
+                .OrderByDescending(c => c.CreatedAt)
+                .Take(count)
+                .ToListAsync();
+        }
 
         public async Task<Car> GetByIdAsync(int id)
         {

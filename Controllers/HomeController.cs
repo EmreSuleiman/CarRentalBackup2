@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using CarRental3._0.Interfaces;
 using CarRental3._0.Models;
+using CarRental3._0.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRental3._0.Controllers
@@ -7,15 +9,19 @@ namespace CarRental3._0.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICarRepository _carRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, ICarRepository carRepository)
         {
             _logger = logger;
+            _carRepository = carRepository;
         }
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            // Get 6 featured cars for the homepage carousel
+            var featuredCars = await _carRepository.GetFeaturedCars(4);
+            return View(featuredCars);
         }
 
         public IActionResult Privacy()

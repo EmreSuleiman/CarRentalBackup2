@@ -43,41 +43,6 @@ body {
     margin: 10px;
 
 }
-
-/* Featured Cars Section */
-.featured-cars {
-    padding: 50px 0;
-    text-align: center;
-    overflow: hidden; /* Hide overflow to create a seamless loop */
-}
-
-.carousel {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-}
-
-.carousel-prev,
-.carousel-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 1;
-}
-
-.carousel-prev {
-    left: 10px;
-}
-
-.carousel-next {
-    right: 10px;
-}
-
 /*.carousel:hover .carousel-track {
     animation-play-state: paused;
 }*/
