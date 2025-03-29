@@ -19,52 +19,6 @@ namespace CarRental3._0.Controllers
             _carRepository = carRepository;
             _userManager = userManager;
         }
-        //public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate, string sortBy)
-        //{
-        //    ViewBag.SelectedCategory = category;
-        //    ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
-        //    ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
-
-        //    IEnumerable<Car> cars;
-
-        //    // Apply date range filter first
-        //    if (startDate.HasValue && endDate.HasValue)
-        //    {
-        //        cars = await _carRepository.GetAvailableCarsAsync(startDate.Value, endDate.Value);
-        //    }
-        //    else
-        //    {
-        //        cars = await _carRepository.GetAll();
-        //    }
-
-        //    // Apply category filter
-        //    if (!string.IsNullOrEmpty(category))
-        //    {
-        //        cars = cars.Where(c => c.Category.ToString() == category).ToList();
-        //    }
-
-        //    // Apply sorting
-        //    switch (sortBy)
-        //    {
-        //        case "price_asc":
-        //            cars = cars.OrderBy(c => c.DailyRate).ToList();
-        //            break;
-        //        case "price_desc":
-        //            cars = cars.OrderByDescending(c => c.DailyRate).ToList();
-        //            break;
-        //        case "year_asc":
-        //            cars = cars.OrderBy(c => c.Year).ToList();
-        //            break;
-        //        case "year_desc":
-        //            cars = cars.OrderByDescending(c => c.Year).ToList();
-        //            break;
-        //        default:
-        //            // Default sorting (e.g., by ID or no sorting)
-        //            break;
-        //    }
-
-        //    return View(cars);
-        //}
         public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate, string sortBy, int maxPrice = 200)
         {
             ViewBag.SelectedCategory = category;
@@ -188,7 +142,7 @@ namespace CarRental3._0.Controllers
             return View(carDetails);
         }
         [HttpPost, ActionName("DeleteCar")]
-        public async Task<IActionResult> DeleteClub(int id)
+        public async Task<IActionResult> DeleteCar(int id)
         {
             var carDetails = await _carRepository.GetByIdAsync(id);
             if (carDetails == null) return View();

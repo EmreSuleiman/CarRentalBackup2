@@ -7,6 +7,31 @@
 <div class="container">
     <h1>@Model.Brand @Model.Model</h1>
     <img height="700px" width ="420px" src="@Model.Image" alt="Image of the car" class="img-fluid" />
+    @if (@Model.Category == CarCategory.Икономична)
+    {
+
+    }
+    else if (@Model.Category == CarCategory.Луксозна)
+    {
+        
+    }
+    else
+    {
+
+    }
+    @switch (@Model.Category)
+    {
+        case CarCategory.Икономична:
+            <p>Нисък разход</p>
+            
+            break;
+        case CarCategory.Луксозна:
+            <p><i>Гарантирано качество</i></p>
+            break;
+        case CarCategory.Ван:
+            <p><b>Идеално за товар</b></p>
+            break;
+    }
     <p>Daily Rate: @Model.DailyRate лв./ден</p>
     <p>Status: @Model.Status</p>
 

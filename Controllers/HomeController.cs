@@ -20,7 +20,7 @@ namespace CarRental3._0.Controllers
         public async Task<IActionResult> Index()
         {
             // Get 6 featured cars for the homepage carousel
-            var featuredCars = await _carRepository.GetFeaturedCars(4);
+            var featuredCars = _carRepository.GetFeaturedCars(4);
             return View(featuredCars);
         }
 

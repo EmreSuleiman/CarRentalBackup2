@@ -1,4 +1,4 @@
-html {
+/*html {
   font-size: 14px;
 }
 
@@ -19,9 +19,9 @@ html {
 
 body {
   margin-bottom: 60px;
-}
+}*/
 /* Hero Section */
-.hero-section {
+/*.hero-section {
     background: url('https://www.nextgearcapital.com/wp-content/uploads/sites/2/2020/04/Dollarphotoclub_85133296.jpg') no-repeat center center/cover;
     color: white;
     padding: 100px 0;
@@ -42,19 +42,19 @@ body {
 .hero-buttons .btn {
     margin: 10px;
 
-}
+}*/
 /*.carousel:hover .carousel-track {
     animation-play-state: paused;
 }*/
 
-.carousel-track {
+/*.carousel-track {
     display: flex;
-    animation: slide 20s linear infinite; /* Adjust speed as needed */
-}
+    animation: slide 20s linear infinite;*/ /* Adjust speed as needed */
+/*}
 
 .car-card {
-    flex: 0 0 300px; /* Fixed width for each car card */
-    margin: 0 15px;
+    flex: 0 0 300px;*/ /* Fixed width for each car card */
+    /*margin: 0 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 10px;
@@ -67,20 +67,20 @@ body {
         width: 300px;
 
         border-radius: 10px;
-    }
+    }*/
 
 /* Animation for sliding */
-@keyframes slide {
+/*@keyframes slide {
     0% {
         transform: translateX(0);
     }
 
     100% {
-        transform: translateX(-50%); /* Move the track by half its width */
-    }
-}
+        transform: translateX(-50%);*/ /* Move the track by half its width */
+    /*}
+}*/
 /* Why Choose Us */
-.why-choose-us {
+/*.why-choose-us {
     padding: 50px 0;
     text-align: center;
 }
@@ -99,10 +99,10 @@ body {
     .benefit-card i {
         font-size: 2rem;
         margin-bottom: 10px;
-    }
+    }*/
 
 /* Testimonials */
-.testimonials {
+/*.testimonials {
     padding: 50px 0;
     text-align: center;
 }
@@ -125,10 +125,10 @@ body {
         width: 80px;
         border-radius: 50%;
         margin-bottom: 10px;
-    }
+    }*/
 
 /* Footer */
-.footer {
+/*.footer {
     background: #333;
     color: white;
     padding: 20px 0;
@@ -145,9 +145,9 @@ body {
     color: white;
     margin: 0 10px;
     font-size: 1.5rem;
-}
+}*/
 /* Catalogue Page */
-.catalogue-container {
+/*.catalogue-container {
     display: flex;
     gap: 30px;
     padding: 20px;
@@ -246,10 +246,10 @@ body {
     .car-price span {
         font-weight: bold;
         font-size: 18px;
-    }
+    }*/
 
 /* Review Section */
-.reviews-section {
+/*.reviews-section {
     padding: 50px 0;
     background: #f8f9fa;
 }
@@ -321,4 +321,4 @@ body {
         .star-rating label:hover,
         .star-rating label:hover ~ label {
             color: #ffc107;
-        }
+        }*/

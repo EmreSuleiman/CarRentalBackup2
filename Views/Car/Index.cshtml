@@ -9,8 +9,8 @@
     <section class="py-5 text-center container">
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">Our Offers</h1>
-                <p class="lead text-body-secondary">Browse our car catalogue below</p>
+                <h1 class="fw-light">Предложенията ни</h1>
+                <p class="lead text-body-secondary">Разгледайте нашият каталог</p>
             </div>
         </div>
     </section>
@@ -18,7 +18,7 @@
     @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
     {
         <div class="text-center">
-            <a asp-controller="Car" asp-action="Create" class="btn btn-primary">Add New Car</a>
+            <a asp-controller="Car" asp-action="Create" class="btn btn-primary">Добави нова кола</a>
         </div>
     }
 
@@ -65,6 +65,9 @@
                            value="@(ViewBag.MaxPrice ?? 200)">
                     <div class="price-values">
                         <span>0 лв.</span>
+                        <span>50 лв.</span>
+                        <span> 100 лв.</span>
+                        <span>150 лв.</span>
                         <span>200 лв.</span>
                     </div>
                 </div>
@@ -79,13 +82,13 @@
             <!-- Sorting Options -->
             <div class="sorting-options">
                 <div class="sort-by">
-                    <span>Sort by:</span>
+                    <span>Сортирай по:</span>
                     <select class="form-select" id="sortBy">
-                        <option value="default">Default</option>
-                        Price (Low to High)
-                        Price (High to Low),
-                        Year (Oldest),
-                        Year (Newest),
+                        <option value="default">--Изберете начин--</option>
+                        <option value="price_asc">Цена (Възходяща)</option>
+                        <option value="price_desc">Цена (Низходяща)</option>
+                        <option value="year_asc">Година (Най-стари)</option>
+                        <option value="year_desc">Година (Най-нови)</option>
                     </select>
                 </div>
             </div>

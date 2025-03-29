@@ -39,6 +39,7 @@ namespace CarRental3._0.Repository
         public async Task<IEnumerable<Car>> GetFeaturedCars(int count)
         {
             return await _context.Cars
+                .Where(c => c.Status == "В наличност")
                 .OrderByDescending(c => c.CreatedAt)
                 .Take(count)
                 .ToListAsync();
