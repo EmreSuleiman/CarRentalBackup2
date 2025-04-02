@@ -1,1 +1,262 @@
-﻿
+﻿@{
+    ViewData["Title"] = "За Нас";
+}
+
+<div class="about-page">
+    <section class="hero-section">
+        <div class="container">
+            <h1>За Нас</h1>
+            <p class="lead">Вашият надежден партньор в автомобилните наеми</p>
+        </div>
+    </section>
+
+    <section class="about-content">
+        <div class="container">
+            <div class="about-section">
+                <h2>Нашата История</h2>
+                <p>Основана през 20xx г., нашата компания бързо се превърна в лидер на пазара на автомобилни наеми в България. Започнахме с малък автопарк от няколко коли, а днес разполагаме с над 200 превозни средства в цялата страна.</p>
+                <p>Нашата мисия е да предоставяме висококачествени услуги на достъпни цени, като съчетаваме модерна технология с лично отношение към всеки клиент.</p>
+            </div>
+
+            <div class="about-section">
+                <h2>Нашите Ценности</h2>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Надеждност</h3>
+                        <p>Всички наши автомобили са поддържани в отлично техническо състояние и преминават редовни прегледи.</p>
+                    </div>
+                    <div class="value-card">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <h3>Достъпност</h3>
+                        <p>Предлагаме конкурентни цени и гъвкави условия за наем, достъпни за всеки клиент.</p>
+                    </div>
+                    <div class="value-card">
+                        <i class="fas fa-heart"></i>
+                        <h3>КлиентоОриентираност</h3>
+                        <p>Вашите нужди са на първо място. Разбираме вашите изисквания и работим за тяхното изпълнение.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <h2>Нашият Екип</h2>
+                <p>Нашият опитен екип от професионалисти е на ваше разположение 24/7, за да ви посъветва и подпомогне при избора на най-подходящия автомобил за вашите нужди.</p>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Иван Петров">
+                        <h3>Иван Петров</h3>
+                        <p>Управител</p>
+                    </div>
+                    <div class="team-card">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Мария Георгиева">
+                        <h3>Мария Георгиева</h3>
+                        <p>Старши консултант</p>
+                    </div>
+                    <div class="team-card">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Георги Димитров">
+                        <h3>Георги Димитров</h3>
+                        <p>Технически специалист</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <h2>Защо да изберете нас?</h2>
+                <ul class="advantages-list">
+                    <li><i class="fas fa-check-circle"></i> Над 10 години опит в бранша</li>
+                    <li><i class="fas fa-check-circle"></i> Широк избор от превозни средства</li>
+                    <li><i class="fas fa-check-circle"></i> Конкурентни цени и специални оферти</li>
+                    <li><i class="fas fa-check-circle"></i> Бърза и лесно онлайн резервация</li>
+                    <li><i class="fas fa-check-circle"></i> 24/7 поддръжка и помощ</li>
+                    <li><i class="fas fa-check-circle"></i> Прозрачни условия без скрити такси</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-promo">
+        <div class="container">
+            <h2>Готови сте да резервирате?</h2>
+            <p>Свържете се с нашия екип днес и ние ще ви помогнем да изберете идеалния автомобил за вашите нужди.</p>
+            <a href="/Contact" class="btn btn-primary">Свържете се с нас</a>
+        </div>
+    </section>
+</div>
+
+@section Styles {
+    <style>
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+            .hero-section h1 {
+                font-size: 3rem;
+                margin-bottom: 20px;
+            }
+
+            .hero-section .lead {
+                font-size: 1.5rem;
+                font-weight: 300;
+            }
+
+        /* About Content */
+        .about-content {
+            padding: 60px 0;
+        }
+
+        .about-section {
+            margin-bottom: 60px;
+        }
+
+            .about-section h2 {
+                text-align: center;
+                margin-bottom: 30px;
+                color: #2c3e50;
+            }
+
+            .about-section p {
+                font-size: 1.1rem;
+                line-height: 1.8;
+                color: #555;
+                max-width: 800px;
+                margin: 0 auto 20px;
+                text-align: center;
+            }
+
+        /* Values Grid */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .value-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+            .value-card:hover {
+                transform: translateY(-10px);
+            }
+
+            .value-card i {
+                font-size: 3rem;
+                color: #3498db;
+                margin-bottom: 20px;
+            }
+
+            .value-card h3 {
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+
+        /* Team Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-card {
+            background: #fff;
+            padding: 30px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+            .team-card img {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-bottom: 20px;
+                border: 5px solid #f8f9fa;
+            }
+
+            .team-card h3 {
+                color: #2c3e50;
+                margin-bottom: 5px;
+            }
+
+            .team-card p {
+                color: #7f8c8d;
+                font-style: italic;
+            }
+
+        /* Advantages List */
+        .advantages-list {
+            max-width: 600px;
+            margin: 0 auto;
+            list-style: none;
+            padding: 0;
+        }
+
+            .advantages-list li {
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+                display: flex;
+                align-items: center;
+            }
+
+            .advantages-list i {
+                color: #2ecc71;
+                margin-right: 15px;
+                font-size: 1.2rem;
+            }
+
+        /* Contact Promo */
+        .contact-promo {
+            background: #3498db;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+            .contact-promo h2 {
+                margin-bottom: 20px;
+            }
+
+            .contact-promo p {
+                max-width: 600px;
+                margin: 0 auto 30px;
+                font-size: 1.1rem;
+            }
+
+            .contact-promo .btn {
+                background: white;
+                color: #3498db;
+                font-weight: bold;
+                padding: 12px 30px;
+                border-radius: 30px;
+            }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-section .lead {
+                font-size: 1.2rem;
+            }
+
+            .about-section {
+                margin-bottom: 40px;
+            }
+        }
+    </style>
+}
