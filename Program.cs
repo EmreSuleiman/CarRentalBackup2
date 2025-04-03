@@ -32,6 +32,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new BlacklistAuthorizationAttribute());
+});
 builder.Services.AddRazorPages();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -76,6 +80,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
+app.UseMiddleware<BlacklistMiddleware>();
 app.UseAuthorization();
 
 app.MapControllerRoute(

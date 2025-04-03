@@ -135,20 +135,46 @@ namespace CarRental3._0.Controllers
 
             return RedirectToAction("Index");
         }
+
         public async Task<IActionResult> Delete(int id)
         {
-            var carDetails = await _carRepository.GetByIdAsync(id);
-            if (carDetails == null) return View();
-            return View(carDetails);
+            var car = await _carRepository.GetByIdAsync(id);
+            if (car == null)
+            {
+                return NotFound();
+            }
+
+            // Map Car to DeleteCarViewModel
+            var viewModel = new DeleteCarViewModel
+            {
+                CarId = car.CarId,
+                Brand = car.Brand,
+                Model = car.Model
+            };
+
+            return View(viewModel);
         }
-        [HttpPost, ActionName("DeleteCar")]
-        public async Task<IActionResult> DeleteCar(int id)
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var carDetails = await _carRepository.GetByIdAsync(id);
-            if (carDetails == null) return View();
-            _carRepository.Delete(carDetails);
+            var car = await _carRepository.GetByIdAsync(id);
+            if (car == null)
+            {
+                return NotFound();
+            }
+
+            _carRepository.Delete(car);
             return RedirectToAction("Index");
         }
+        //[HttpPost, ActionName("DeleteCar")]
+        //public async Task<IActionResult> DeleteCar(int id)
+        //{
+        //    var carDetails = await _carRepository.GetByIdAsync(id);
+        //    if (carDetails == null) return View();
+        //    _carRepository.Delete(carDetails);
+        //    return RedirectToAction("Index");
+        //}
         public async Task<IActionResult> FilterCars(DateTime startDate, DateTime endDate)
         {
             var availableCars = await _carRepository.GetAvailableCarsAsync(startDate, endDate);

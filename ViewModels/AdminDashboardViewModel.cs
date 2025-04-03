@@ -7,6 +7,7 @@ namespace CarRental3._0.ViewModels
         public List<Rental> Rentals { get; set; } = new List<Rental>();
         public List<UserViewModel> Users { get; set; } = new List<UserViewModel>();
         public List<UserViewModel> BlacklistedUsers { get; set; } = new List<UserViewModel>();
+        public string BlacklistReason { get; set; } // Add this
     }
 
     public class UserViewModel

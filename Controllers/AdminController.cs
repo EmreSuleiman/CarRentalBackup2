@@ -11,11 +11,13 @@ namespace CarRental3._0.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<AdminController> _logger;
 
-        public AdminController(ApplicationDbContext context, UserManager<AppUser> userManager)
+        public AdminController(ApplicationDbContext context, UserManager<AppUser> userManager, ILogger<AdminController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Dashboard()
@@ -56,14 +58,19 @@ namespace CarRental3._0.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> BlacklistUser(string userId)
+        public async Task<IActionResult> BlacklistUser(string userId, string reason)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
                 user.IsBlacklisted = true;
+                // You could store the reason in a separate table or add a property to AppUser
                 await _userManager.UpdateAsync(user);
+
+                // Optionally send an email notification
+                // await _emailService.SendBlacklistNotification(user.Email, reason);
             }
+            _logger.LogInformation($"User {User.Identity.Name} blacklisted user {user.Email}. Reason: {reason}");
             return RedirectToAction("Dashboard");
         }
 
@@ -76,6 +83,7 @@ namespace CarRental3._0.Controllers
                 user.IsBlacklisted = false;
                 await _userManager.UpdateAsync(user);
             }
+            _logger.LogInformation($"User {User.Identity.Name} unblacklisted user {user.Email}");
             return RedirectToAction("Dashboard");
         }
     }

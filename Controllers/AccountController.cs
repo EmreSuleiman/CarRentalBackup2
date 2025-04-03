@@ -1,6 +1,7 @@
 ﻿using CarRental3._0.Data;
 using CarRental3._0.Models;
 using CarRental3._0.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,6 +37,11 @@ namespace CarRental3._0.Controllers
 
             // Find the user by email
             var user = await _userManager.FindByEmailAsync(loginVM.Email);
+            if (user != null && user.IsBlacklisted)
+            {
+                TempData["Error"] = "Your account has been blacklisted. Please contact support.";
+                return View(loginVM);
+            }
 
             if (user != null)
             {
@@ -54,6 +60,7 @@ namespace CarRental3._0.Controllers
                     }
                 }
             }
+
 
             // If login fails, display an error message
             TempData["Error"] = "Грешна информация. Моля опитайте отново.";
@@ -111,6 +118,17 @@ namespace CarRental3._0.Controllers
                 return View(registerVM);
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Car");
+        }
+        [AllowAnonymous]
+        public IActionResult Blacklisted()
+        {
+            return View();
+        }
         //[HttpPost]
         //public async Task<IActionResult> Register(RegisterViewModel registerVM)
         //{
@@ -132,11 +150,6 @@ namespace CarRental3._0.Controllers
 
         //    return View("Views/Home/Index.cshtml");
         //}
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Car");
-        }
+
     }
 }

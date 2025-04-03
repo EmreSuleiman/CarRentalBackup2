@@ -65,7 +65,11 @@
                             {
                                 <form asp-action="BlacklistUser" method="post" style="display: inline;">
                                     <input type="hidden" name="userId" value="@user.Id" />
-                                    <button type="submit" class="btn btn-danger btn-sm">Blacklist</button>
+                                    <div class="input-group">
+                                        <input type="text" name="reason" class="form-control form-control-sm"
+                                               placeholder="Reason for blacklist" required>
+                                        <button type="submit" class="btn btn-danger btn-sm">Blacklist</button>
+                                    </div>
                                 </form>
                             }
                             else
