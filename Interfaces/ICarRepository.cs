@@ -7,7 +7,7 @@ namespace CarRental3._0.Interfaces
         Task<IEnumerable<Car>> GetAll();
         Task<IEnumerable<Car>> GetFeaturedCars(int count);
         Task<IEnumerable<Car>> GetCarByCategory(string category);
-        Task<List<Car>> GetAvailableCarsAsync(DateTime startDate, DateTime endDate);
+        Task<List<Car>> GetAvailableCarsAsync(DateTime startDate, DateTime endDate, int? locationId = null);
         Task<Car> GetByIdAsync(int id);
         Task<Car> GetByIdAsyncNotracking(int id);
 

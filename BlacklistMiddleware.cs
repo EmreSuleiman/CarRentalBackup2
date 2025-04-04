@@ -43,7 +43,7 @@ public class BlacklistMiddleware
 
             if (user?.IsBlacklisted == true && !path.Equals("/Account/Blacklisted", StringComparison.OrdinalIgnoreCase))
             {
-                _logger.LogWarning($"Blacklisted user {user.Email} attempted to access {path}");
+                _logger.LogWarning($"Потребителят {user.Email} от Ченият списък се опита да достъпи {path}");
                 context.Response.Redirect("/Account/Blacklisted");
                 return;
             }

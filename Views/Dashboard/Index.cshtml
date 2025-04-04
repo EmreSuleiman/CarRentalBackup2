@@ -5,24 +5,24 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h1>Dashboard</h1>
+<h1>Профил</h1>
 
-<h2>Personal Information</h2>
-<p><strong>Name:</strong> @(Model.User?.FullName ?? "N/A")</p>
-<p><strong>Email:</strong> @(Model.User?.Email ?? "N/A")</p>
+<h2>Лична информация</h2>
+<p><strong>Име:</strong> @(Model.User?.FullName ?? "N/A")</p>
+<p><strong>Имейл:</strong> @(Model.User?.Email ?? "N/A")</p>
 
 @if (User.Identity.IsAuthenticated && User.IsInRole("user"))
 {
-    <h2>Rental History</h2>
+    <h2>История на наемания</h2>
     @if (Model.Rentals.Any())
     {
         <table class="table">
             <thead>
                 <tr>
-                    <th>Car</th>
-                    <th>Rental Date</th>
-                    <th>Return Date</th>
-                    <th>Total Cost</th>
+                    <th>Кола</th>
+                    <th>Начало</th>
+                    <th>Край</th>
+                    <th>Обща цена</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,7 +40,8 @@
     }
     else
     {
-        <p>No rentals found.</p>
+        <p>Няма наети коли.</p>
+        <a asp-controller="Car" asp-action="Index" class="btn btn-primary">Наеми сега!</a>
     }
 }
 else

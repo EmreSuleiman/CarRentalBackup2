@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using CarRental3._0.Interfaces
+@inject ILocationService LocationService
+<!DOCTYPE html>
 <html lang="en">
 <head>
     @RenderSection("Styles", required: false)
@@ -10,49 +12,142 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CarRental3._0.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CarRental3._0</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow mb-3 py-3">
+            <div class="container">
+                <!-- Logo with better sizing -->
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="https://t3.ftcdn.net/jpg/02/56/94/74/360_F_256947432_mW9bJpGFdJo9kw9XovizaHcQI2NOVXc8.jpg"
+                    alt="Company Logo"
+                    class="d-inline-block align-top"
+                    style="height: 100px; width: auto;">
+                </a>
+
+                <!-- Mobile Toggle Button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Начало</a>
+
+                <!-- Navigation Items with larger text -->
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0" style="font-size: 1.15rem;">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-dark fw-bold px-3 py-2 rounded"
+                            asp-controller="Home"
+                            asp-action="Index"
+                            style="transition: all 0.3s;">
+                                <i class="fas fa-home me-2"></i> Начало
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-dark fw-bold px-3 py-2 rounded"
+                            asp-controller="Car"
+                            asp-action="Index"
+                            style="transition: all 0.3s;">
+                                <i class="fas fa-car me-2"></i> Каталог
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-dark fw-bold px-3 py-2 rounded"
+                            asp-controller="Home"
+                            asp-action="About"
+                            style="transition: all 0.3s;">
+                                <i class="fas fa-info-circle me-2"></i> За нас
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="locationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Локации
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="locationsDropdown">
+                                @foreach (var location in await LocationService.GetAllLocationsAsync())
+                                {
+                                    <li><a class="dropdown-item" href="/Car/Index?locationId=@location.Id">@location.Name</a></li>
+                                }
+                            </ul>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Car" asp-action="Index">Каталог</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">За нас</a>
-                        </li>
                     </ul>
-                    <partial name="_LoginPartial" />
+
+                    <!-- Login Partial (right-aligned) with larger text -->
+                    <div class="d-flex align-items-center" style="font-size: 1.15rem;">
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Hover effects */
+        .nav-link:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        /* Active link styling */
+        .nav-item .active {
+            color: #0d6efd !important;
+            border-bottom: 3px solid #0d6efd;
+        }
+
+        /* Better spacing for login partial */
+        .navbar-collapse {
+            justify-content: space-between;
+        }
+
+        /* Larger text for all nav items */
+        .navbar-nav {
+            font-size: 1.15rem;
+        }
+
+        /* Larger logo to match text size */
+        .navbar-brand img {
+            height: 60px;
+        }
+
+        /* Increased icon spacing */
+        .nav-link i {
+            margin-right: 0.5rem;
+        }
+    </style>
+
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Hover effects */
+        .nav-link:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        /* Active link styling */
+        .nav-item .active {
+            color: #0d6efd !important;
+            border-bottom: 2px solid #0d6efd;
+        }
+
+        /* Better spacing for login partial */
+        .navbar-collapse {
+            justify-content: space-between;
+        }
+    </style>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - CarRental3._0 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

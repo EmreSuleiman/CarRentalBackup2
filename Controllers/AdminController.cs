@@ -70,7 +70,7 @@ namespace CarRental3._0.Controllers
                 // Optionally send an email notification
                 // await _emailService.SendBlacklistNotification(user.Email, reason);
             }
-            _logger.LogInformation($"User {User.Identity.Name} blacklisted user {user.Email}. Reason: {reason}");
+            _logger.LogInformation($"Потребителят {User.Identity.Name} вкара в ченият списък {user.Email}. Причина: {reason}");
             return RedirectToAction("Dashboard");
         }
 
@@ -83,7 +83,7 @@ namespace CarRental3._0.Controllers
                 user.IsBlacklisted = false;
                 await _userManager.UpdateAsync(user);
             }
-            _logger.LogInformation($"User {User.Identity.Name} unblacklisted user {user.Email}");
+            _logger.LogInformation($"Потребителят {User.Identity.Name} махна от Черният списък {user.Email}");
             return RedirectToAction("Dashboard");
         }
     }

@@ -43,8 +43,8 @@ namespace CarRental3._0.Controllers
             {
                 if (user.IsBlacklisted)
                 {
-                    _logger.LogWarning($"Blacklisted user {user.Email} attempted to login");
-                    TempData["Error"] = "Your account has been blacklisted. Please contact support.";
+                    _logger.LogWarning($"Потребител от Черният списък {user.Email} се опита да се впише");
+                    TempData["Error"] = "Вашият акаунт е в Черният списък. Моля свържете се с поддръжка";
                     return View(loginVM);
                 }
 
@@ -55,7 +55,7 @@ namespace CarRental3._0.Controllers
                 }
             }
 
-            TempData["Error"] = "Invalid login attempt.";
+            TempData["Error"] = "Грешна информация.";
             return View(loginVM);
         }
 
@@ -72,7 +72,7 @@ namespace CarRental3._0.Controllers
             var user = await _userManager.FindByEmailAsync(registerVM.Email);
             if (user != null)
             {
-                TempData["Error"] = "This email address is already in use.";
+                TempData["Error"] = "Този имейл е вече използван.";
                 return View(registerVM);
             }
 
@@ -91,7 +91,7 @@ namespace CarRental3._0.Controllers
                 await _userManager.AddToRoleAsync(newUser, UserRoles.User);
 
                 // Log the successful registration
-                Console.WriteLine($"User {newUser.Email} registered successfully.");
+                Console.WriteLine($"Потребител {newUser.Email} се регистрира успешно.");
 
                 // Sign in the user after registration
                 await _signInManager.SignInAsync(newUser, isPersistent: false);
@@ -104,7 +104,7 @@ namespace CarRental3._0.Controllers
                 // Log errors
                 foreach (var error in newUserResponse.Errors)
                 {
-                    Console.WriteLine($"Error during registration: {error.Description}");
+                    Console.WriteLine($"Грешка при регистрация: {error.Description}");
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
                 return View(registerVM);
@@ -141,7 +141,7 @@ namespace CarRental3._0.Controllers
             // Prevent self-blacklisting
             if (userId == _userManager.GetUserId(User))
             {
-                TempData["Error"] = "You cannot blacklist yourself.";
+                TempData["Error"] = "Не е възможно да добавите себе си в Черният списък.";
                 return RedirectToAction("Dashboard");
             }
 
@@ -161,32 +161,10 @@ namespace CarRental3._0.Controllers
                         await _signInManager.SignOutAsync();
                     }
 
-                    TempData["Success"] = $"User {user.Email} has been blacklisted.";
+                    TempData["Success"] = $"Потребителят {user.Email} е добавен в Черният списък.";
                 }
             }
             return RedirectToAction("Dashboard");
         }
-        //[HttpPost]
-        //public async Task<IActionResult> Register(RegisterViewModel registerVM)
-        //{
-        //    if (!ModelState.IsValid) return View(registerVM);
-        //    var user = await _userManager.FindByEmailAsync(registerVM.Email);
-        //    if(user != null)
-        //    {
-        //        TempData["Error"] = "This email address in already in user";
-        //        return View(registerVM);
-        //    }
-        //    var newUser = new AppUser()
-        //    {
-        //        Email = registerVM.Email,
-        //        UserName = registerVM.Email
-        //    };
-        //    var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
-
-        //    if (newUserResponse.Succeeded) await _userManager.AddToRoleAsync(newUser, UserRoles.User);
-
-        //    return View("Views/Home/Index.cshtml");
-        //}
-
     }
 }

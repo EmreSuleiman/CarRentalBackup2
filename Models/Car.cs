@@ -15,5 +15,7 @@
 
         // Navigation properties
         public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
+        public int? LocationId { get; set; }
+        public Location Location { get; set; }
     }
 }

@@ -19,42 +19,70 @@ namespace CarRental3._0.Controllers
             _carRepository = carRepository;
             _userManager = userManager;
         }
-        public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate, string sortBy, int maxPrice = 200)
+        //public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate, string sortBy, int maxPrice = 200)
+        //{
+        //    ViewBag.SelectedCategory = category;
+        //    ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+        //    ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+        //    ViewBag.MaxPrice = maxPrice;
+        //    ViewBag.SortBy = sortBy;
+
+        //    IEnumerable<Car> cars = await _carRepository.GetAll();
+
+        //    // Apply date range filter
+        //    if (startDate.HasValue && endDate.HasValue)
+        //    {
+        //        cars = await _carRepository.GetAvailableCarsAsync(startDate.Value, endDate.Value);
+        //    }
+
+        //    // Apply category filter (now using Bulgarian values)
+        //    if (!string.IsNullOrEmpty(category))
+        //    {
+        //        cars = cars.Where(c => c.Category.ToString() == category);
+        //    }
+
+        //    // Apply price filter
+        //    cars = cars.Where(c => c.DailyRate <= maxPrice);
+
+        //    // Apply sorting
+        //    cars = sortBy switch
+        //    {
+        //        "price_asc" => cars.OrderBy(c => c.DailyRate),
+        //        "price_desc" => cars.OrderByDescending(c => c.DailyRate),
+        //        "year_asc" => cars.OrderBy(c => c.Year),
+        //        "year_desc" => cars.OrderByDescending(c => c.Year),
+        //        _ => cars.OrderBy(c => c.CarId) // Default sorting
+        //    };
+
+        //    return View(cars.ToList());
+        //}
+        public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate, string sortBy, int? locationId)
         {
             ViewBag.SelectedCategory = category;
+            ViewBag.SelectedLocationId = locationId;
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
-            ViewBag.MaxPrice = maxPrice;
-            ViewBag.SortBy = sortBy;
 
             IEnumerable<Car> cars = await _carRepository.GetAll();
 
-            // Apply date range filter
+            // Apply filters
             if (startDate.HasValue && endDate.HasValue)
             {
                 cars = await _carRepository.GetAvailableCarsAsync(startDate.Value, endDate.Value);
             }
 
-            // Apply category filter (now using Bulgarian values)
             if (!string.IsNullOrEmpty(category))
             {
                 cars = cars.Where(c => c.Category.ToString() == category);
             }
 
-            // Apply price filter
-            cars = cars.Where(c => c.DailyRate <= maxPrice);
-
-            // Apply sorting
-            cars = sortBy switch
+            if (locationId.HasValue)
             {
-                "price_asc" => cars.OrderBy(c => c.DailyRate),
-                "price_desc" => cars.OrderByDescending(c => c.DailyRate),
-                "year_asc" => cars.OrderBy(c => c.Year),
-                "year_desc" => cars.OrderByDescending(c => c.Year),
-                _ => cars.OrderBy(c => c.CarId) // Default sorting
-            };
+                cars = cars.Where(c => c.LocationId == locationId);
+            }
 
-            return View(cars.ToList());
+            // Apply sorting...
+            return View(cars);
         }
 
         public async Task<IActionResult> Detail(int id)

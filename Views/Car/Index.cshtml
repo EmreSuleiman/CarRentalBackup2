@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<Car>
+@using CarRental3._0.Interfaces
 @using CarRental3._0.Models
+@using CarRental3._0.Interfaces
+@inject ILocationService LocationService
 
 @{
     ViewData["Title"] = "Car Catalogue";
@@ -25,12 +28,23 @@
     <div class="catalogue-container">
         <!-- Left Sidebar - Filters -->
         <div class="filter-sidebar">
-            <h3>Filters</h3>
-            
+            <h3>Филтри</h3>
+
             <!-- Date Range Picker -->
             <div class="filter-section">
-                <h5>Rental Date</h5>
-                <input type="text" id="dateRangePicker" class="form-control" placeholder="Select period">
+                <h5>Период за резервации</h5>
+                <input type="text" id="dateRangePicker" class="form-control" placeholder="Избери период">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="locationFilter">Локация:</label>
+                <select id="locationFilter" class="form-control">
+                    <option value="">Всички локации</option>
+                    @foreach (var location in await LocationService.GetAllLocationsAsync())
+                    {
+                        <option value="@location.Id" selected="@(ViewBag.SelectedLocationId == location.Id)">@location.Name</option>
+                    }
+                </select>
             </div>
 
             <!-- Category Filter -->
@@ -59,7 +73,7 @@
 
             <!-- Price Range -->
             <div class="filter-section">
-                <h5>Price Range</h5>
+                <h5>Максимална цена</h5>
                 <div class="price-range">
                     <input type="range" class="form-range" min="0" max="200" step="10" id="priceRange" 
                            value="@(ViewBag.MaxPrice ?? 200)">
@@ -74,7 +88,7 @@
             </div>
 
             <!-- Apply Filters Button -->
-            <button id="applyFilters" class="btn btn-primary">Apply Filters</button>
+            <button id="applyFilters" class="btn btn-primary">Приложи филтри</button>
         </div>
 
         <!-- Right Content - Cars Listing -->
@@ -110,13 +124,13 @@
                                     <span><i class="fas fa-tag"></i> @car.Category</span>
                                 </div>
                                 <div class="car-price">
-                                    <span>@car.DailyRate лв./day</span>
+                                    <span>@car.DailyRate лв./ден</span>
                                     @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
                                     {
-                                        <a asp-controller="Car" asp-action="Edit" asp-route-id="@car.CarId" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                        <a asp-controller="Car" asp-action="Delete" asp-route-id="@car.CarId" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                        <a asp-controller="Car" asp-action="Edit" asp-route-id="@car.CarId" class="btn btn-sm btn-outline-secondary">Редактирай</a>
+                                        <a asp-controller="Car" asp-action="Delete" asp-route-id="@car.CarId" class="btn btn-sm btn-outline-secondary">Изтрий</a>
                                     }
-                                    <a href="/Car/Detail/@car.CarId" class="btn btn-primary">Rent</a>
+                                    <a href="/Car/Detail/@car.CarId" class="btn btn-primary">Наеми</a>
                                 </div>
                             </div>
                         </div>
@@ -125,13 +139,17 @@
                 else
                 {
                     <div class="no-results">
-                        <p>No cars found matching your filters.</p>
+                        <p>Няма коли по тези критерии.</p>
                     </div>
                 }
             </div>
         </div>
     </div>
 </main>
+<footer class="border-top footer text-muted">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" style="height: 100px; width: auto; align-self: center;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" style="height: 100px; width: auto;">
+</footer>
 
 @section Styles {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -281,11 +299,12 @@
             });
 
             // Apply filters
-            document.getElementById("applyFilters").addEventListener("click", function () {
-                const dateRange = document.getElementById("dateRangePicker").value;
-                const category = document.querySelector('input[name="category"]:checked').value;
-                const priceRange = document.getElementById("priceRange").value;
-                const sortBy = document.getElementById("sortBy").value;
+                  document.getElementById("locationFilter").addEventListener("change", function() {
+            const locationId = this.value;
+            const category = "@ViewBag.SelectedCategory";
+            const startDate = "@ViewBag.StartDate";
+            const endDate = "@ViewBag.EndDate";
+            const sortBy = "@ViewBag.SortBy";
 
                 let url = `/Car/Index?sortBy=${sortBy}&maxPrice=${priceRange}`;
 
@@ -298,7 +317,7 @@
                     url += `&category=${category}`;
                 }
 
-                window.location.href = url;
+                 window.location.href = `/Car/Index?category=${category}&startDate=${startDate}&endDate=${endDate}&sortBy=${sortBy}&locationId=${locationId}`;
             });
         });
     </script>

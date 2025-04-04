@@ -64,14 +64,19 @@ namespace CarRental3._0.Repository
             }
             return await _context.Cars.ToListAsync(); // Fallback to all cars if parsing fails
         }
-
-        public async Task<List<Car>> GetAvailableCarsAsync(DateTime startDate, DateTime endDate)
+        async Task<List<Car>> ICarRepository.GetAvailableCarsAsync(DateTime startDate, DateTime endDate, int? locationId = null)
         {
-            return await _context.Cars
-                .Where(c => !c.Rentals.Any(r =>
-                    (r.RentalDate <= endDate && r.ReturnDate >= startDate) // Check for overlapping rentals
-                ))
-                .ToListAsync();
+            var query = _context.Cars
+            .Where(c => !c.Rentals.Any(r =>
+                (r.RentalDate <= endDate && r.ReturnDate >= startDate)
+            ));
+
+            if (locationId.HasValue)
+            {
+                query = query.Where(c => c.LocationId == locationId);
+            }
+
+            return await query.ToListAsync();
         }
 
         public bool Update(Car car)
@@ -83,6 +88,7 @@ namespace CarRental3._0.Repository
             _context.Entry(car).State = EntityState.Modified;
             return Save();
         }
+
 
     }
 }

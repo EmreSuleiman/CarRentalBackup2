@@ -1,43 +1,176 @@
 ﻿@model CarRental3._0.Models.Car
 
 @{
-    ViewData["Title"] = "Car Details";
+    ViewData["Title"] = "Детайли за колата";
 }
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Car Image with Shadow Effect -->
+            <div class="card shadow-sm mb-4">
+                <img src="@Model.Image" alt="@Model.Brand @Model.Model" class="img-fluid rounded" style="max-height: 500px; width: 100%; object-fit: cover;">
+            </div>
 
-<div class="container">
-    <h1>@Model.Brand @Model.Model</h1>
-    <img height="700px" width ="420px" src="@Model.Image" alt="Image of the car" class="img-fluid" />
-    @switch (@Model.Category)
-    {
-        case CarCategory.Икономична:
-            <p>Нисък разход</p>
-            
-            break;
-        case CarCategory.Луксозна:
-            <p><i>Гарантирано качество</i></p>
-            break;
-        case CarCategory.Ван:
-            <p><b>Идеално за товар</b></p>
-            break;
-    }
-    <p>Daily Rate: @Model.DailyRate лв./ден</p>
-    <p>Status: @Model.Status</p>
-
-    <!-- Rent Form -->
-    <h2>Rent This Car</h2>
-    <form asp-action="Rent" method="post">
-        <input type="hidden" name="CarId" value="@Model.CarId" />
-
-        <div class="form-group">
-            <label for="RentalDate">Start Date</label>
-            <input type="date" name="RentalDate" class="form-control" required />
+            <!-- Car Features -->
+            <div class="card shadow-sm p-3">
+                <h4 class="text-primary">Характеристики:</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Марка:</span>
+                        <span class="badge bg-primary rounded-pill">@Model.Brand</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Модел:</span>
+                        <span class="badge bg-primary rounded-pill">@Model.Model</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Година:</span>
+                        <span class="badge bg-primary rounded-pill">@Model.Year</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Категория:</span>
+                        <span class="badge bg-primary rounded-pill">@Model.Category</span>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="ReturnDate">End Date</label>
-            <input type="date" name="ReturnDate" class="form-control" required />
-        </div>
+        <div class="col-md-6">
+            <!-- Car Info Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">@Model.Brand @Model.Model</h2>
 
-        <button type="submit" class="btn btn-primary">Rent</button>
-    </form>
+                    <!-- Category-specific badge -->
+                    <div class="mb-3">
+                        @switch (@Model.Category)
+                        {
+                            case CarCategory.Икономична:
+                                <span class="badge bg-success fs-6">Ниски разходи</span>
+                                <p class="mt-2 text-muted">Идеален избор за икономично пътуване</p>
+                                break;
+                            case CarCategory.Луксозна:
+                                <span class="badge bg-warning text-dark fs-6">Премиум класа</span>
+                                <p class="mt-2 text-muted">Гарантирано качество и комфорт</p>
+                                break;
+                            case CarCategory.Ван:
+                                <span class="badge bg-info text-dark fs-6">Товарен</span>
+                                <p class="mt-2 text-muted">Идеален за превоз на товари</p>
+                                break;
+                        }
+                    </div>
+
+                    <!-- Price and Status -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h4 class="text-success">@Model.DailyRate лв. <small class="text-muted">/ ден</small></h4>
+                        </div>
+                        <div>
+                            @if (Model.Status == "В наличност")
+                            {
+                                <span class="badge bg-success p-2">@Model.Status</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger p-2">@Model.Status</span>
+                            }
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Rent Form -->
+                    <h4 class="mb-3">Наеми тази кола</h4>
+                    <form asp-action="Rent" method="post" class="needs-validation" novalidate>
+                        <input type="hidden" name="CarId" value="@Model.CarId" />
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="RentalDate" class="form-label">Начална дата</label>
+                                <input type="date" name="RentalDate" class="form-control" required
+                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                <div class="invalid-feedback">
+                                    Моля изберете начална дата
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="ReturnDate" class="form-label">Крайна дата</label>
+                                <input type="date" name="ReturnDate" class="form-control" required
+                                       min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" />
+                                <div class="invalid-feedback">
+                                    Моля изберете крайна дата
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-car me-2"></i> Наеми сега
+                            </button>
+
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+                            {
+                                <div class="mt-2 d-flex justify-content-between">
+                                    <a asp-action="Edit" asp-route-id="@Model.CarId"
+                                       class="btn btn-outline-secondary">
+                                        <i class="fas fa-edit me-1"></i> Редактирай
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@Model.CarId"
+                                       class="btn btn-outline-danger">
+                                        <i class="fas fa-trash me-1"></i> Изтрий
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5><i class="fas fa-info-circle text-primary me-2"></i>Допълнителна информация</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Безплатна доставка в града</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Пълен бак гориво</li>
+                        <li><i class="fas fa-check text-success me-2"></i>24/7 Поддръжка</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Form validation
+        (function () {
+            'use strict'
+
+            var forms = document.querySelectorAll('.needs-validation')
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+
+        // Date validation
+        document.querySelector('input[name="RentalDate"]').addEventListener('change', function() {
+            const returnDate = document.querySelector('input[name="ReturnDate"]');
+            returnDate.min = this.value;
+
+            if (new Date(returnDate.value) < new Date(this.value)) {
+                returnDate.value = "";
+            }
+        });
+    </script>
+}

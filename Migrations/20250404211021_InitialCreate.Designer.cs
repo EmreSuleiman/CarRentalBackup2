@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRental3._0.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250321202900_FixCarIdColumnType")]
-    partial class FixCarIdColumnType
+    [Migration("20250404211021_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,10 @@ namespace CarRental3._0.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("BlacklistReason")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -107,57 +111,6 @@ namespace CarRental3._0.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("CarRental3._0.Models.Booking", b =>
-                {
-                    b.Property<int>("BookingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("BookingId"));
-
-                    b.Property<DateTime>("BookingDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("BookingStatus")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("CarId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("TotalCost")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("BookingId");
-
-                    b.HasIndex("CarId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Bookings");
-                });
-
             modelBuilder.Entity("CarRental3._0.Models.Car", b =>
                 {
                     b.Property<int>("CarId")
@@ -183,6 +136,9 @@ namespace CarRental3._0.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -199,6 +155,8 @@ namespace CarRental3._0.Migrations
 
                     b.HasKey("CarId");
 
+                    b.HasIndex("LocationId");
+
                     b.ToTable("Cars");
 
                     b.HasData(
@@ -207,27 +165,100 @@ namespace CarRental3._0.Migrations
                             CarId = 1,
                             Brand = "Toyota",
                             Category = 0,
-                            CreatedAt = new DateTime(2025, 3, 21, 20, 29, 0, 318, DateTimeKind.Utc).AddTicks(5668),
+                            CreatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7940),
                             DailyRate = 30m,
                             Image = "https://global.toyota/pages/models/images/camry/camry_010_s.jpg",
                             Model = "Camry",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 3, 21, 20, 29, 0, 318, DateTimeKind.Utc).AddTicks(5669),
+                            UpdatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7940),
                             Year = 2024
                         },
                         new
                         {
                             CarId = 2,
                             Brand = "Toyota",
-                            Category = 1,
-                            CreatedAt = new DateTime(2025, 3, 21, 20, 29, 0, 318, DateTimeKind.Utc).AddTicks(5670),
-                            DailyRate = 50m,
-                            Image = "https://www.cstatic-images.com/car-pictures/xl/USC90TOC021A021001.png",
-                            Model = "Camry",
+                            Category = 0,
+                            CreatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7941),
+                            DailyRate = 40m,
+                            Image = "https://di-uploads-pod3.dealerinspire.com/riversidetoyota/uploads/2018/12/2019-Toyota-Corolla-L-123118-copy.png",
+                            Model = "Corolla",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 3, 21, 20, 29, 0, 318, DateTimeKind.Utc).AddTicks(5670),
-                            Year = 2020
+                            UpdatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7942),
+                            Year = 2023
+                        },
+                        new
+                        {
+                            CarId = 3,
+                            Brand = "Ford",
+                            Category = 2,
+                            CreatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7943),
+                            DailyRate = 60m,
+                            Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQle7rOjsAdhTfpggSwLzKnflAShadVzCWb7Q&s",
+                            Model = "Transit",
+                            Status = "В наличност",
+                            UpdatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7944),
+                            Year = 2022
+                        },
+                        new
+                        {
+                            CarId = 4,
+                            Brand = "BMW",
+                            Category = 1,
+                            CreatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7946),
+                            DailyRate = 120m,
+                            Image = "https://prod.cosy.bmw.cloud/bmwweb/cosySec?COSY-EU-100-7331rjFhnOqIbqcTZ%25L3hpvYLfCny2oWYgpnQ97lX80UrOohZkVAfS5cVLNHCLvhJP%25z6eEzFu4fXBjvWzmQltE6BmudhSId4k9VTCrmpIUrOrJrhDGwXHi4T4qF9%25rJHFlFe6ou4TJIsIUzL3FlTv0VliyXIslGAzWECrv0s9OaRBE4GA0ogRwlNF9OALUxnXkIogOybW5KnvLUgChe2B5GybUEqjpx89ChbNmQtiPoEqhk7ZnHMLNmqn1cmaDyk7m5VKGPYCn178zB3vtE5V1Pa28mfN8zVMRpoMSkPazDxTKAdnMRaYWlALQ5DxRtesOwZ8YWxfj0gKcPteWS6AdaKMfjedwOQNBDS6jQ%25gZp2Ydw6ZuUNfptQ%25wc3bnFifZu%25KXh5JHSc3uBrq9YJdKX324mIKTQBrXpF7CAlZ24riI15ascpF4HvVAA0KiIFJGz7xABHvIT9a1nO2JGvloILUgpT9GsLvS6Uilo90yG10bHsLoAC9VshJ0yLOEozxqTACygNLpfmlOECUkaKH7sgNEbnR2V10UkNh5xWqVAbnkq8WeszOh5nmPej4agq857MjK0RUmP81D6psxb7MPVYws5Wh1DMzt%25r0eqVYDafu46jmztYRSaLP67aftxdRyww1RSfWQxDD%25VxdSeZWCuuzWQdjceTE3aeZQ6KjPpXRjcZwBZvHrx6Kc%252cqJ4WwBKupK5jFe%252B3iBucIjup2XH2fwv63iprJp9eGwXHi4TfF99%25UHNMClix2t5JUABNItPb9FSrTLn9lVc%25s6l89RpC0vQFju1dWS2aOIXRTVcwL9cvtT7672yzH3OYgMTN6uQmlDTI0Ccy2of4Y",
+                            Model = "X5",
+                            Status = "В наличност",
+                            UpdatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7946),
+                            Year = 2023
+                        },
+                        new
+                        {
+                            CarId = 5,
+                            Brand = "Volkswagen",
+                            Category = 2,
+                            CreatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7948),
+                            DailyRate = 110m,
+                            Image = "https://autochill.ru/wp-content/uploads/2021/03/kisspng-van-volkswagen-polo-car-volkswagen-transporter-5b0392784fe112.8189206915269607603272-removebg-preview.png",
+                            Model = "Transporter",
+                            Status = "В наличност",
+                            UpdatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7948),
+                            Year = 2013
+                        },
+                        new
+                        {
+                            CarId = 6,
+                            Brand = "Audi",
+                            Category = 1,
+                            CreatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7950),
+                            DailyRate = 90m,
+                            Image = "https://platform.cstatic-images.com/in/v2/stock_photos/c4359896-c20e-46da-87a2-a7b2734561b3/c0535e58-31b9-488d-b5b7-55818402e3e6.png",
+                            Model = "A4",
+                            Status = "В наличност",
+                            UpdatedAt = new DateTime(2025, 4, 4, 21, 10, 21, 308, DateTimeKind.Utc).AddTicks(7950),
+                            Year = 2022
                         });
+                });
+
+            modelBuilder.Entity("CarRental3._0.Models.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("CarRental3._0.Models.Rental", b =>
@@ -261,6 +292,35 @@ namespace CarRental3._0.Migrations
                     b.HasIndex("CarId");
 
                     b.ToTable("Rentals");
+                });
+
+            modelBuilder.Entity("CarRental3._0.Models.Review", b =>
+                {
+                    b.Property<int>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ReviewId"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -395,23 +455,13 @@ namespace CarRental3._0.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CarRental3._0.Models.Booking", b =>
+            modelBuilder.Entity("CarRental3._0.Models.Car", b =>
                 {
-                    b.HasOne("CarRental3._0.Models.Car", "Car")
-                        .WithMany()
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("CarRental3._0.Models.Location", "Location")
+                        .WithMany("Cars")
+                        .HasForeignKey("LocationId");
 
-                    b.HasOne("CarRental3._0.Models.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Car");
-
-                    b.Navigation("User");
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("CarRental3._0.Models.Rental", b =>
@@ -431,6 +481,17 @@ namespace CarRental3._0.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Car");
+                });
+
+            modelBuilder.Entity("CarRental3._0.Models.Review", b =>
+                {
+                    b.HasOne("CarRental3._0.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -492,6 +553,11 @@ namespace CarRental3._0.Migrations
             modelBuilder.Entity("CarRental3._0.Models.Car", b =>
                 {
                     b.Navigation("Rentals");
+                });
+
+            modelBuilder.Entity("CarRental3._0.Models.Location", b =>
+                {
+                    b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618
         }

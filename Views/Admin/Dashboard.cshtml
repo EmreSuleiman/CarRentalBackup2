@@ -5,25 +5,25 @@
 }
 
 <div class="container">
-    <h1>Admin Dashboard</h1>
+    <h1>Админ панел</h1>
 
     <!-- Buttons -->
     <div class="mb-4">
-        <button id="showRentalsButton" class="btn btn-primary">See Rentals</button>
-        <button id="showUsersButton" class="btn btn-secondary">Manage Users</button>
+        <button id="showRentalsButton" class="btn btn-primary">Виж резервациите</button>
+        <button id="showUsersButton" class="btn btn-secondary">Управление на потребителите</button>
     </div>
 
     <!-- Rentals Section -->
     <div id="rentalsSection" class="mb-4">
-        <h2>All Rentals</h2>
+        <h2>Всички резервации</h2>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Car</th>
-                    <th>User</th>
-                    <th>Rental Date</th>
-                    <th>Return Date</th>
-                    <th>Total Cost</th>
+                    <th>Кола</th>
+                    <th>Потребител</th>
+                    <th>Начало</th>
+                    <th>Край</th>
+                    <th>Обща цена</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,14 +43,14 @@
 
     <!-- Users Section -->
     <div id="usersSection" class="mb-4" style="display: none;">
-        <h2>All Users</h2>
+        <h2>Всички потребители</h2>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                    <th>Име</th>
+                    <th>Имейл</th>
+                    <th>Роля</th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,8 +67,8 @@
                                     <input type="hidden" name="userId" value="@user.Id" />
                                     <div class="input-group">
                                         <input type="text" name="reason" class="form-control form-control-sm"
-                                               placeholder="Reason for blacklist" required>
-                                        <button type="submit" class="btn btn-danger btn-sm">Blacklist</button>
+                                               placeholder="Причина за забрана" required>
+                                        <button type="submit" class="btn btn-danger btn-sm">Добави в ЧС</button>
                                     </div>
                                 </form>
                             }
@@ -76,7 +76,7 @@
                             {
                                 <form asp-action="UnblacklistUser" method="post" style="display: inline;">
                                     <input type="hidden" name="userId" value="@user.Id" />
-                                    <button type="submit" class="btn btn-success btn-sm">Unblacklist</button>
+                                    <button type="submit" class="btn btn-success btn-sm">Премахни от ЧС</button>
                                 </form>
                             }
                         </td>
@@ -88,14 +88,14 @@
 
     <!-- Blacklisted Users Section -->
     <div id="blacklistedUsersSection" class="mb-4" style="display: none;">
-        <h2>Blacklisted Users</h2>
+        <h2>Черен Списък</h2>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                    <th>Име</th>
+                    <th>Имейл</th>
+                    <th>Роля</th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody>
@@ -108,7 +108,7 @@
                         <td>
                             <form asp-action="UnblacklistUser" method="post" style="display: inline;">
                                 <input type="hidden" name="userId" value="@user.Id" />
-                                <button type="submit" class="btn btn-success btn-sm">Unblacklist</button>
+                                <button type="submit" class="btn btn-success btn-sm">Премахни от ЧС</button>
                             </form>
                         </td>
                     </tr>
