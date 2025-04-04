@@ -32,10 +32,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add(new BlacklistAuthorizationAttribute());
-});
+
 builder.Services.AddRazorPages();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

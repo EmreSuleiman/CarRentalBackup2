@@ -14,5 +14,6 @@ namespace CarRental3._0.Models
 
         // Navigation properties
         public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
+        public string BlacklistReason { get; set; }
     }
 }

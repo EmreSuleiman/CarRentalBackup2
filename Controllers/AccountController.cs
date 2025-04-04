@@ -12,12 +12,14 @@ namespace CarRental3._0.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ApplicationDbContext context)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ApplicationDbContext context, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult Login()
@@ -26,44 +28,34 @@ namespace CarRental3._0.Controllers
             return View(response);
         }
 
+
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel loginVM)
         {
             if (!ModelState.IsValid)
             {
-                // If the model state is invalid, return the view with validation errors
                 return View(loginVM);
             }
 
-            // Find the user by email
             var user = await _userManager.FindByEmailAsync(loginVM.Email);
-            if (user != null && user.IsBlacklisted)
-            {
-                TempData["Error"] = "Your account has been blacklisted. Please contact support.";
-                return View(loginVM);
-            }
-
             if (user != null)
             {
-                // Check if the password is correct
-                var passwordCheck = await _userManager.CheckPasswordAsync(user, loginVM.Password);
-
-                if (passwordCheck)
+                if (user.IsBlacklisted)
                 {
-                    // Sign in the user
-                    var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, isPersistent: false, lockoutOnFailure: false);
+                    _logger.LogWarning($"Blacklisted user {user.Email} attempted to login");
+                    TempData["Error"] = "Your account has been blacklisted. Please contact support.";
+                    return View(loginVM);
+                }
 
-                    if (result.Succeeded)
-                    {
-                        // Redirect to the home page or a specific page after successful login
-                        return RedirectToAction("Index", "Home");
-                    }
+                var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
                 }
             }
 
-
-            // If login fails, display an error message
-            TempData["Error"] = "Грешна информация. Моля опитайте отново.";
+            TempData["Error"] = "Invalid login attempt.";
             return View(loginVM);
         }
 
@@ -124,10 +116,55 @@ namespace CarRental3._0.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Car");
         }
+
         [AllowAnonymous]
-        public IActionResult Blacklisted()
+        public async Task<IActionResult> Blacklisted()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || !user.IsBlacklisted)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> BlacklistUser(string userId, string reason)
+        {
+            // Prevent self-blacklisting
+            if (userId == _userManager.GetUserId(User))
+            {
+                TempData["Error"] = "You cannot blacklist yourself.";
+                return RedirectToAction("Dashboard");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                user.IsBlacklisted = true;
+                user.BlacklistReason = reason;
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    // Sign out the user if they're currently logged in
+                    var isCurrentUser = user.Id == _userManager.GetUserId(User);
+                    if (!isCurrentUser)
+                    {
+                        await _signInManager.SignOutAsync();
+                    }
+
+                    TempData["Success"] = $"User {user.Email} has been blacklisted.";
+                }
+            }
+            return RedirectToAction("Dashboard");
         }
         //[HttpPost]
         //public async Task<IActionResult> Register(RegisterViewModel registerVM)

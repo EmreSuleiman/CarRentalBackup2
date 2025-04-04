@@ -4,25 +4,48 @@ using Microsoft.AspNetCore.Identity;
 public class BlacklistMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<BlacklistMiddleware> _logger;
+    private static readonly List<string> _allowedPaths = new List<string>
+    {
+        "/Account/Logout",
+        "/Account/Blacklisted",
+        "/Account/AccessDenied",
+        "/Error",
+        "/favicon.ico",
+        "/lib/",
+        "/css/",
+        "/js/",
+        "/_framework/",
+        "/Identity/"
+    };
 
-    public BlacklistMiddleware(RequestDelegate next)
+    public BlacklistMiddleware(RequestDelegate next, ILogger<BlacklistMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context, UserManager<AppUser> userManager)
     {
-        if (context.User.Identity.IsAuthenticated)
+        var path = context.Request.Path.Value ?? string.Empty;
+
+        // Skip middleware for allowed paths
+        if (_allowedPaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)))
+        {
+            await _next(context);
+            return;
+        }
+
+        // Only check authenticated users
+        if (context.User.Identity?.IsAuthenticated == true)
         {
             var user = await userManager.GetUserAsync(context.User);
-            if (user != null && user.IsBlacklisted)
+
+            if (user?.IsBlacklisted == true && !path.Equals("/Account/Blacklisted", StringComparison.OrdinalIgnoreCase))
             {
-                // Don't allow access to any page except the logout page
-                if (!context.Request.Path.StartsWithSegments("/Account/Logout"))
-                {
-                    context.Response.Redirect("/Account/Blacklisted");
-                    return;
-                }
+                _logger.LogWarning($"Blacklisted user {user.Email} attempted to access {path}");
+                context.Response.Redirect("/Account/Blacklisted");
+                return;
             }
         }
 
