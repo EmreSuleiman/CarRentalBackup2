@@ -12,5 +12,9 @@ namespace CarRental3._0.ViewModels
 
         [Required]
         public string Model { get; set; }
+        [Required]
+        public string LocationName { get; set; }
+        [Required]
+        public int? LocationId { get; set; }
     }
 }

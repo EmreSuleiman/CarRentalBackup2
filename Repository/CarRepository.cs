@@ -34,7 +34,9 @@ namespace CarRental3._0.Repository
 
         public async Task<IEnumerable<Car>> GetAll()
         {
-            return await _context.Cars.ToListAsync();
+            return await _context.Cars
+                .Include(c => c.Location)
+                .ToListAsync();
         }
         public async Task<IEnumerable<Car>> GetFeaturedCars(int count)
         {
@@ -47,8 +49,11 @@ namespace CarRental3._0.Repository
 
         public async Task<Car> GetByIdAsync(int id)
         {
-            return await _context.Cars.FirstOrDefaultAsync(i => i.CarId == id);
+            return await _context.Cars
+                .Include(c => c.Location)
+                .FirstOrDefaultAsync(c => c.CarId == id);
         }
+
         public async Task<Car> GetByIdAsyncNotracking(int id)
         {
             return await _context.Cars.AsNoTracking().FirstOrDefaultAsync(i => i.CarId == id);
@@ -62,14 +67,15 @@ namespace CarRental3._0.Repository
                     .Where(c => c.Category == carCategory)
                     .ToListAsync();
             }
-            return await _context.Cars.ToListAsync(); // Fallback to all cars if parsing fails
+            return await _context.Cars.ToListAsync();
         }
-        async Task<List<Car>> ICarRepository.GetAvailableCarsAsync(DateTime startDate, DateTime endDate, int? locationId = null)
+        public async Task<IEnumerable<Car>> GetAvailableCarsAsync(DateTime startDate, DateTime endDate, int? locationId = null)
         {
             var query = _context.Cars
-            .Where(c => !c.Rentals.Any(r =>
-                (r.RentalDate <= endDate && r.ReturnDate >= startDate)
-            ));
+                .Include(c => c.Location) 
+                .Where(c => !c.Rentals.Any(r =>
+                    (r.RentalDate <= endDate && r.ReturnDate >= startDate)
+                ));
 
             if (locationId.HasValue)
             {

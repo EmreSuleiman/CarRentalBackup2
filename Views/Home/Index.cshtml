@@ -27,7 +27,7 @@
                 foreach (var car in Model)
                 {
                     <div class="car-card">
-                        <img src="@car.Image" alt="@car.Brand @car.Model" onerror="this.src='https://via.placeholder.com/300x200?text=Car+Image'">
+                        <img src="@car.ImagePath" alt="@car.Brand @car.Model" class="img-fluid">
                         <h3>@car.Brand @car.Model</h3>
                         <p>@car.DailyRate лв./ден</p>
                         <a href="/Car/Detail/@car.CarId" class="btn btn-primary">Наеми</a>
@@ -133,7 +133,7 @@
     <style>
         /* Hero Section */
         .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://www.nextgearcapital.com/wp-content/uploads/sites/2/2020/04/Dollarphotoclub_85133296.jpg');
             background-size: cover;
             background-position: center;
             color: white;

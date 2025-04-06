@@ -23,6 +23,18 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="LocationId">Локация</label>
+        <select asp-for="LocationId" class="form-control">
+            <option value="">-- Избери локация --</option>
+            @foreach (var location in Model.Locations)
+            {
+                <option value="@location.Value" selected="@(location.Selected)">@location.Text</option>
+            }
+        </select>
+        <span asp-validation-for="LocationId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="DailyRate">Дневна такса</label>
         <input asp-for="DailyRate" class="form-control" />
         <span asp-validation-for="DailyRate" class="text-danger"></span>
@@ -48,9 +60,21 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Image">Връзка за изображение</label>
-        <input asp-for="Image" class="form-control" />
-        <span asp-validation-for="Image" class="text-danger"></span>
+        <label>Текуща снимка</label>
+        @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+        {
+            <img src="@Model.ExistingImagePath" class="img-thumbnail" style="max-height: 200px;" />
+        }
+        else
+        {
+            <p>Няма качена снимка</p>
+        }
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ImageFile" class="control-label"></label>
+        <input asp-for="ImageFile" class="form-control" type="file" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Промени</button>

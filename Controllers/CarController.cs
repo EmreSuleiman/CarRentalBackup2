@@ -1,9 +1,11 @@
 ﻿using CarRental3._0.Data;
 using CarRental3._0.Interfaces;
 using CarRental3._0.Models;
+using CarRental3._0.Repository;
 using CarRental3._0.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarRental3._0.Controllers
@@ -13,75 +15,73 @@ namespace CarRental3._0.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ICarRepository _carRepository;
         private readonly UserManager<AppUser> _userManager;
-        public CarController(ApplicationDbContext context, ICarRepository carRepository, UserManager<AppUser> userManager)
+        private readonly ILocationService _locationService;
+        private readonly IImageService _imageService;
+        public CarController(ApplicationDbContext context, ICarRepository carRepository, UserManager<AppUser> userManager, ILocationService locationService, IImageService imageService)
         {
             _context = context;
             _carRepository = carRepository;
             _userManager = userManager;
+            _locationService = locationService;
+            _imageService = imageService;
         }
-        //public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate, string sortBy, int maxPrice = 200)
-        //{
-        //    ViewBag.SelectedCategory = category;
-        //    ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
-        //    ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
-        //    ViewBag.MaxPrice = maxPrice;
-        //    ViewBag.SortBy = sortBy;
-
-        //    IEnumerable<Car> cars = await _carRepository.GetAll();
-
-        //    // Apply date range filter
-        //    if (startDate.HasValue && endDate.HasValue)
-        //    {
-        //        cars = await _carRepository.GetAvailableCarsAsync(startDate.Value, endDate.Value);
-        //    }
-
-        //    // Apply category filter (now using Bulgarian values)
-        //    if (!string.IsNullOrEmpty(category))
-        //    {
-        //        cars = cars.Where(c => c.Category.ToString() == category);
-        //    }
-
-        //    // Apply price filter
-        //    cars = cars.Where(c => c.DailyRate <= maxPrice);
-
-        //    // Apply sorting
-        //    cars = sortBy switch
-        //    {
-        //        "price_asc" => cars.OrderBy(c => c.DailyRate),
-        //        "price_desc" => cars.OrderByDescending(c => c.DailyRate),
-        //        "year_asc" => cars.OrderBy(c => c.Year),
-        //        "year_desc" => cars.OrderByDescending(c => c.Year),
-        //        _ => cars.OrderBy(c => c.CarId) // Default sorting
-        //    };
-
-        //    return View(cars.ToList());
-        //}
-        public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate, string sortBy, int? locationId)
+        public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate,
+    string sortBy, int? locationId, decimal? maxPrice)
         {
             ViewBag.SelectedCategory = category;
             ViewBag.SelectedLocationId = locationId;
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+            ViewBag.SortBy = sortBy;
+            ViewBag.MaxPrice = maxPrice;
 
             IEnumerable<Car> cars = await _carRepository.GetAll();
 
-            // Apply filters
+            // Apply date filter
             if (startDate.HasValue && endDate.HasValue)
             {
                 cars = await _carRepository.GetAvailableCarsAsync(startDate.Value, endDate.Value);
             }
 
+            // Apply category filter
             if (!string.IsNullOrEmpty(category))
             {
                 cars = cars.Where(c => c.Category.ToString() == category);
             }
 
+            // Apply location filter
             if (locationId.HasValue)
             {
                 cars = cars.Where(c => c.LocationId == locationId);
             }
 
-            // Apply sorting...
+            // Apply price filter
+            if (maxPrice.HasValue)
+            {
+                cars = cars.Where(c => c.DailyRate <= maxPrice);
+            }
+
+            // Apply sorting
+            switch (sortBy)
+            {
+                case "price_asc":
+                    cars = cars.OrderBy(c => c.DailyRate);
+                    break;
+                case "price_desc":
+                    cars = cars.OrderByDescending(c => c.DailyRate);
+                    break;
+                case "year_asc":
+                    cars = cars.OrderBy(c => c.Year);
+                    break;
+                case "year_desc":
+                    cars = cars.OrderByDescending(c => c.Year);
+                    break;
+                default:
+                    // Default sorting (by ID)
+                    cars = cars.OrderBy(c => c.CarId);
+                    break;
+            }
+
             return View(cars);
         }
 
@@ -93,21 +93,56 @@ namespace CarRental3._0.Controllers
                 return NotFound();
             }
 
+            car.Location = await _context.Locations.FindAsync(car.LocationId);
+
             return View(car);
         }
         public IActionResult Create()
         {
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> Create(Car car)
-        {
-            if (!ModelState.IsValid)
+            var model = new CarCreateViewModel
             {
-                return View(car);
+                Locations = _context.Locations.Select(l => new SelectListItem
+                {
+                    Value = l.Id.ToString(),
+                    Text = l.Name
+                })
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CarCreateViewModel createVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var car = new Car
+                {
+                    Brand = createVM.Brand,
+                    Model = createVM.Model,
+                    Year = createVM.Year,
+                    DailyRate = createVM.DailyRate,
+                    Category = createVM.Category,
+                    Status = createVM.Status,
+                    LocationId = createVM.LocationId
+                };
+
+                if (createVM.ImageFile != null)
+                {
+                    car.ImagePath = await _imageService.SaveImageAsync(createVM.ImageFile);
+                }
+
+                _carRepository.Add(car);
+                return RedirectToAction("Index");
             }
-            _carRepository.Add(car);
-            return RedirectToAction("Index");
+
+            // Repopulate locations if validation fails
+            createVM.Locations = _context.Locations.Select(l => new SelectListItem
+            {
+                Value = l.Id.ToString(),
+                Text = l.Name
+            });
+
+            return View(createVM);
         }
         public async Task<IActionResult> Edit(int id)
         {
@@ -117,7 +152,9 @@ namespace CarRental3._0.Controllers
                 return NotFound();
             }
 
-            var carVM = new EditCarViewModel
+            var locations = await _locationService.GetAllLocationsAsync();
+
+            var viewModel = new EditCarViewModel
             {
                 CarId = car.CarId,
                 Brand = car.Brand,
@@ -126,42 +163,68 @@ namespace CarRental3._0.Controllers
                 DailyRate = car.DailyRate,
                 Category = car.Category,
                 Status = car.Status,
-                Image = car.Image
+                ExistingImagePath = car.ImagePath,
+                LocationId = car.LocationId,
+                Locations = locations.Select(l => new SelectListItem
+                {
+                    Value = l.Id.ToString(),
+                    Text = l.Name,
+                    Selected = l.Id == car.LocationId
+                })
             };
 
-            return View(carVM);
+            return View(viewModel);
         }
 
+        // POST: Car/Edit/5
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, EditCarViewModel carVM)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, EditCarViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(carVM);
-            }
-
-            var car = await _carRepository.GetByIdAsync(id);
-            if (car == null)
+            if (id != viewModel.CarId)
             {
                 return NotFound();
             }
 
-            car.Brand = carVM.Brand;
-            car.Model = carVM.Model;
-            car.Year = carVM.Year;
-            car.DailyRate = carVM.DailyRate;
-            car.Category = carVM.Category;
-            car.Status = carVM.Status;
-            car.Image = carVM.Image;
-
-            var result = _carRepository.Update(car);
-            if (!result)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Failed to update the car.");
-                return View(carVM);
+                var car = await _carRepository.GetByIdAsync(id);
+                if (car == null)
+                {
+                    return NotFound();
+                }
+
+                car.Brand = viewModel.Brand;
+                car.Model = viewModel.Model;
+                car.Year = viewModel.Year;
+                car.DailyRate = viewModel.DailyRate;
+                car.Category = viewModel.Category;
+                car.Status = viewModel.Status;
+                car.LocationId = viewModel.LocationId;
+
+                if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+                {
+                    // Delete old image if exists
+                    if (!string.IsNullOrEmpty(car.ImagePath))
+                    {
+                        _imageService.DeleteImage(car.ImagePath);
+                    }
+
+                    car.ImagePath = await _imageService.SaveImageAsync(viewModel.ImageFile);
+                }
+
+                _carRepository.Update(car);
+                return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction("Index");
+            // If we got this far, something failed, redisplay form
+            var locations = await _locationService.GetAllLocationsAsync();
+            viewModel.Locations = locations.Select(l => new SelectListItem
+            {
+                Value = l.Id.ToString(),
+                Text = l.Name
+            });
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -172,12 +235,16 @@ namespace CarRental3._0.Controllers
                 return NotFound();
             }
 
-            // Map Car to DeleteCarViewModel
+            // Load location information
+            car.Location = await _context.Locations.FindAsync(car.LocationId);
+
             var viewModel = new DeleteCarViewModel
             {
                 CarId = car.CarId,
                 Brand = car.Brand,
-                Model = car.Model
+                Model = car.Model,
+                LocationName = car.Location?.Name ?? "Не е зададена",
+                LocationId = car.LocationId
             };
 
             return View(viewModel);
@@ -191,18 +258,16 @@ namespace CarRental3._0.Controllers
             {
                 return NotFound();
             }
+            // Delete the image if it exists
+            if (!string.IsNullOrEmpty(car.ImagePath))
+            {
+                _imageService.DeleteImage(car.ImagePath);
+            }
 
             _carRepository.Delete(car);
             return RedirectToAction("Index");
         }
-        //[HttpPost, ActionName("DeleteCar")]
-        //public async Task<IActionResult> DeleteCar(int id)
-        //{
-        //    var carDetails = await _carRepository.GetByIdAsync(id);
-        //    if (carDetails == null) return View();
-        //    _carRepository.Delete(carDetails);
-        //    return RedirectToAction("Index");
-        //}
+
         public async Task<IActionResult> FilterCars(DateTime startDate, DateTime endDate)
         {
             var availableCars = await _carRepository.GetAvailableCarsAsync(startDate, endDate);
@@ -212,7 +277,7 @@ namespace CarRental3._0.Controllers
                 brand = c.Brand,
                 model = c.Model,
                 dailyRate = c.DailyRate,
-                image = c.Image,
+                image = c.ImagePath,
                 status = c.Status,
                 isAdmin = User.Identity.IsAuthenticated && User.IsInRole("admin")
             }));

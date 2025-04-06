@@ -21,6 +21,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register the background service
 builder.Services.AddHostedService<CarStatusBackgroundService>();
 
+builder.Services.AddSingleton<IWebHostEnvironment>(provider =>
+    provider.GetRequiredService<IWebHostEnvironment>());
+
 // Use AppUser as the Identity user
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -39,6 +42,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 var app = builder.Build();
 

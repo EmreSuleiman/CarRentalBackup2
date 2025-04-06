@@ -8,7 +8,21 @@
         <div class="col-md-6">
             <!-- Car Image with Shadow Effect -->
             <div class="card shadow-sm mb-4">
-                <img src="@Model.Image" alt="@Model.Brand @Model.Model" class="img-fluid rounded" style="max-height: 500px; width: 100%; object-fit: cover;">
+                <img src="@Model.ImagePath" alt="@Model.Brand @Model.Model" class="img-fluid rounded" style="max-height: 500px; width: 100%; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-map-marker-alt"></i> Локация</h5>
+                    @if (Model.Location != null)
+                    {
+                        <p class="card-text">
+                            <strong>@Model.Location.Name</strong><br>
+                            @Model.Location.Address
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="card-text text-muted">Не е зададена локация</p>
+                    }
+                </div>
             </div>
 
             <!-- Car Features -->
@@ -23,6 +37,7 @@
                         <span>Модел:</span>
                         <span class="badge bg-primary rounded-pill">@Model.Model</span>
                     </li>
+
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>Година:</span>
                         <span class="badge bg-primary rounded-pill">@Model.Year</span>

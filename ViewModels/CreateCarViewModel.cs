@@ -1,16 +1,35 @@
 ﻿using CarRental3._0.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarRental3._0.ViewModels
 {
-    public class CreateCarViewModel
+    public class CarCreateViewModel
     {
-        public int CarId { get; set; }
-        public string Brand { get; set; } = string.Empty;
+        [Required]
+        public string Brand { get; set; } = string.Empty;  // Initialize with default
+
+        [Required]
         public string Model { get; set; } = string.Empty;
+
+        [Required]
         public int Year { get; set; }
+
+        [Required]
         public decimal DailyRate { get; set; }
-        public CarCategory Category { get; set; } // Use the enum here
+
+        [Required]
+        public CarCategory Category { get; set; }
+
+        [Required]
         public string Status { get; set; } = "В наличност";
-        public string? Image { get; set; }
+
+        public string? ImagePath { get; set; }  // Make nullable
+
+        public IFormFile? ImageFile { get; set; }  // Make nullable
+
+        public int? LocationId { get; set; }
+
+        public IEnumerable<SelectListItem> Locations { get; set; }
     }
 }

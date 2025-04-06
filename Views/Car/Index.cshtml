@@ -1,11 +1,10 @@
 ﻿@model IEnumerable<Car>
 @using CarRental3._0.Interfaces
 @using CarRental3._0.Models
-@using CarRental3._0.Interfaces
 @inject ILocationService LocationService
 
 @{
-    ViewData["Title"] = "Car Catalogue";
+    ViewData["Title"] = "Каталог с коли";
 }
 
 <main>
@@ -33,9 +32,11 @@
             <!-- Date Range Picker -->
             <div class="filter-section">
                 <h5>Период за резервации</h5>
-                <input type="text" id="dateRangePicker" class="form-control" placeholder="Избери период">
+                <input type="text" id="dateRangePicker" class="form-control" placeholder="Избери период"
+                       value="@(ViewBag.StartDate != null && ViewBag.EndDate != null ? $"{ViewBag.StartDate} to {ViewBag.EndDate}" : "")">
             </div>
 
+            <!-- Location Picker -->
             <div class="form-group mb-3">
                 <label for="locationFilter">Локация:</label>
                 <select id="locationFilter" class="form-control">
@@ -48,24 +49,27 @@
             </div>
 
             <!-- Category Filter -->
-            <!-- In the category filter section, replace with: -->
             <div class="filter-section">
                 <h5>Категория</h5>
                 <div class="category-options">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="allCategories" value="" @(string.IsNullOrEmpty(ViewBag.SelectedCategory) ? "checked" : "")>
+                        <input class="form-check-input" type="radio" name="category" id="allCategories" value=""
+                        @(string.IsNullOrEmpty(ViewBag.SelectedCategory) ? "checked" : "")>
                         <label class="form-check-label" for="allCategories">Всички</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="economical" value="Икономична" @(ViewBag.SelectedCategory == "Икономична" ? "checked" : "")>
+                        <input class="form-check-input" type="radio" name="category" id="economical" value="Икономична"
+                        @(ViewBag.SelectedCategory == "Икономична" ? "checked" : "")>
                         <label class="form-check-label" for="economical">Икономична</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="luxury" value="Луксозна" @(ViewBag.SelectedCategory == "Луксозна" ? "checked" : "")>
+                        <input class="form-check-input" type="radio" name="category" id="luxury" value="Луксозна"
+                        @(ViewBag.SelectedCategory == "Луксозна" ? "checked" : "")>
                         <label class="form-check-label" for="luxury">Луксозна</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="van" value="Ван" @(ViewBag.SelectedCategory == "Ван" ? "checked" : "")>
+                        <input class="form-check-input" type="radio" name="category" id="van" value="Ван"
+                        @(ViewBag.SelectedCategory == "Ван" ? "checked" : "")>
                         <label class="form-check-label" for="van">Ван</label>
                     </div>
                 </div>
@@ -73,22 +77,26 @@
 
             <!-- Price Range -->
             <div class="filter-section">
-                <h5>Максимална цена</h5>
+                <h5>Максимална цена (лв./ден)</h5>
                 <div class="price-range">
-                    <input type="range" class="form-range" min="0" max="200" step="10" id="priceRange" 
+                    <input type="range" class="form-range" min="0" max="200" step="10" id="priceRange"
                            value="@(ViewBag.MaxPrice ?? 200)">
                     <div class="price-values">
-                        <span>0 лв.</span>
-                        <span>50 лв.</span>
-                        <span> 100 лв.</span>
-                        <span>150 лв.</span>
-                        <span>200 лв.</span>
+                        <span>0</span>
+                        <span>50</span>
+                        <span>100</span>
+                        <span>150</span>
+                        <span>200</span>
+                    </div>
+                    <div class="price-selected">
+                        <span id="priceRangeValue">@(ViewBag.MaxPrice ?? 200)</span> лв.
                     </div>
                 </div>
             </div>
 
             <!-- Apply Filters Button -->
-            <button id="applyFilters" class="btn btn-primary">Приложи филтри</button>
+            <button id="applyFilters" class="btn btn-primary w-100">Приложи филтри</button>
+            <button id="resetFilters" class="btn btn-outline-secondary w-100 mt-2">Изчисти филтри</button>
         </div>
 
         <!-- Right Content - Cars Listing -->
@@ -98,11 +106,11 @@
                 <div class="sort-by">
                     <span>Сортирай по:</span>
                     <select class="form-select" id="sortBy">
-                        <option value="default">--Изберете начин--</option>
-                        <option value="price_asc">Цена (Възходяща)</option>
-                        <option value="price_desc">Цена (Низходяща)</option>
-                        <option value="year_asc">Година (Най-стари)</option>
-                        <option value="year_desc">Година (Най-нови)</option>
+                        <option value="">--Изберете--</option>
+                        <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">Цена (възходяща)</option>
+                        <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">Цена (низходяща)</option>
+                        <option value="year_asc" selected="@(ViewBag.SortBy == "year_asc")">Година (най-стари)</option>
+                        <option value="year_desc" selected="@(ViewBag.SortBy == "year_desc")">Година (най-нови)</option>
                     </select>
                 </div>
             </div>
@@ -115,20 +123,28 @@
                     {
                         <div class="car-card">
                             <div class="car-image">
-                                <img src="@car.Image" alt="@car.Brand @car.Model">
+                                <img src="@car.ImagePath" alt="@car.Brand @car.Model" class="img-fluid">
                             </div>
                             <div class="car-details">
                                 <h4>@car.Brand @car.Model</h4>
                                 <div class="car-specs">
                                     <span><i class="fas fa-calendar-alt"></i> @car.Year</span>
                                     <span><i class="fas fa-tag"></i> @car.Category</span>
+                                    @if (car.Location != null)
+                                    {
+                                        <span><i class="fas fa-map-marker-alt"></i> @car.Location.Name</span>
+                                    }
                                 </div>
                                 <div class="car-price">
-                                    <span>@car.DailyRate лв./ден</span>
+                                    <span>@car.DailyRate.ToString("0.00") лв./ден</span>
                                     @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
                                     {
-                                        <a asp-controller="Car" asp-action="Edit" asp-route-id="@car.CarId" class="btn btn-sm btn-outline-secondary">Редактирай</a>
-                                        <a asp-controller="Car" asp-action="Delete" asp-route-id="@car.CarId" class="btn btn-sm btn-outline-secondary">Изтрий</a>
+                                        <div class="admin-actions">
+                                            <a asp-controller="Car" asp-action="Edit" asp-route-id="@car.CarId"
+                                               class="btn btn-sm btn-outline-secondary">Редактирай</a>
+                                            <a asp-controller="Car" asp-action="Delete" asp-route-id="@car.CarId"
+                                               class="btn btn-sm btn-outline-danger">Изтрий</a>
+                                        </div>
                                     }
                                     <a href="/Car/Detail/@car.CarId" class="btn btn-primary">Наеми</a>
                                 </div>
@@ -140,16 +156,13 @@
                 {
                     <div class="no-results">
                         <p>Няма коли по тези критерии.</p>
+                        <a href="/Car/Index" class="btn btn-primary">Изчисти филтри</a>
                     </div>
                 }
             </div>
         </div>
     </div>
 </main>
-<footer class="border-top footer text-muted">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" style="height: 100px; width: auto; align-self: center;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" style="height: 100px; width: auto;">
-</footer>
 
 @section Styles {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -179,9 +192,9 @@
             border-bottom: 1px solid #eee;
         }
 
-        .filter-section:last-child {
-            border-bottom: none;
-        }
+            .filter-section:last-child {
+                border-bottom: none;
+            }
 
         .category-options .form-check {
             margin-bottom: 8px;
@@ -195,7 +208,14 @@
             display: flex;
             justify-content: space-between;
             margin-top: 5px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .price-selected {
+            text-align: center;
+            margin-top: 5px;
+            font-weight: bold;
         }
 
         .cars-listing {
@@ -228,9 +248,9 @@
             transition: transform 0.3s;
         }
 
-        .car-card:hover {
-            transform: translateY(-5px);
-        }
+            .car-card:hover {
+                transform: translateY(-5px);
+            }
 
         .car-image img {
             width: 100%;
@@ -244,11 +264,18 @@
 
         .car-specs {
             display: flex;
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
             margin: 10px 0;
             color: #666;
             font-size: 14px;
         }
+
+            .car-specs span {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
 
         .car-price {
             display: flex;
@@ -257,9 +284,14 @@
             margin-top: 15px;
         }
 
-        .car-price span {
-            font-weight: bold;
-            font-size: 18px;
+            .car-price span {
+                font-weight: bold;
+                font-size: 18px;
+            }
+
+        .admin-actions {
+            display: flex;
+            gap: 5px;
         }
 
         .no-results {
@@ -274,7 +306,7 @@
             .catalogue-container {
                 flex-direction: column;
             }
-            
+
             .filter-sidebar {
                 width: 100%;
                 position: static;
@@ -286,9 +318,9 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-                document.addEventListener("DOMContentLoaded", function () {
-            // Date range picker
-            flatpickr("#dateRangePicker", {
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize date range picker
+            const dateRangePicker = flatpickr("#dateRangePicker", {
                 mode: "range",
                 dateFormat: "Y-m-d",
                 minDate: "today",
@@ -298,27 +330,69 @@
                 ]
             });
 
-            // Apply filters
-                  document.getElementById("locationFilter").addEventListener("change", function() {
-            const locationId = this.value;
-            const category = "@ViewBag.SelectedCategory";
-            const startDate = "@ViewBag.StartDate";
-            const endDate = "@ViewBag.EndDate";
-            const sortBy = "@ViewBag.SortBy";
+            // Update price range display
+            const priceRange = document.getElementById("priceRange");
+            const priceRangeValue = document.getElementById("priceRangeValue");
+            priceRangeValue.textContent = priceRange.value;
 
-                let url = `/Car/Index?sortBy=${sortBy}&maxPrice=${priceRange}`;
+            priceRange.addEventListener("input", function() {
+                priceRangeValue.textContent = this.value;
+            });
 
-                if (dateRange) {
-                    const [startDate, endDate] = dateRange.split(" to ");
-                    url += `&startDate=${startDate}&endDate=${endDate}`;
+            // Apply filters button
+            document.getElementById("applyFilters").addEventListener("click", function() {
+                applyFilters();
+            });
+
+            // Reset filters button
+            document.getElementById("resetFilters").addEventListener("click", function() {
+                window.location.href = "/Car/Index";
+            });
+
+            function applyFilters() {
+                const locationId = document.getElementById("locationFilter").value;
+                const category = document.querySelector('input[name="category"]:checked').value;
+                const sortBy = document.getElementById("sortBy").value;
+                const maxPrice = document.getElementById("priceRange").value;
+                const dateRange = dateRangePicker.selectedDates;
+
+                // Build URL with all filters
+                let url = "/Car/Index?";
+
+                if (locationId) {
+                    url += `locationId=${locationId}&`;
                 }
 
                 if (category) {
-                    url += `&category=${category}`;
+                    url += `category=${category}&`;
                 }
 
-                 window.location.href = `/Car/Index?category=${category}&startDate=${startDate}&endDate=${endDate}&sortBy=${sortBy}&locationId=${locationId}`;
-            });
+                if (sortBy) {
+                    url += `sortBy=${sortBy}&`;
+                }
+
+                if (maxPrice && maxPrice != 200) {
+                    url += `maxPrice=${maxPrice}&`;
+                }
+
+                if (dateRange.length === 2) {
+                    const startDate = formatDate(dateRange[0]);
+                    const endDate = formatDate(dateRange[1]);
+                    url += `startDate=${startDate}&endDate=${endDate}&`;
+                }
+
+                // Remove trailing & if exists
+                if (url.endsWith("&")) {
+                    url = url.slice(0, -1);
+                }
+
+                // Navigate to the filtered URL
+                window.location.href = url;
+            }
+
+            function formatDate(date) {
+                return date.toISOString().split('T')[0];
+            }
         });
     </script>
 }

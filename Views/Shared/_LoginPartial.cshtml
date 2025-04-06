@@ -8,22 +8,24 @@
         @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Dashboard">Hello @User.Identity?.Name!</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Dashboard">Здравейте @User.Identity?.Name! <i class="fa-solid fa-user"></i></a>
             </li>
             <li class="nav-item">
                 <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
-                    <button type="submit" class="nav-link btn btn-link text-dark">Изход</button>
+                    <button type="submit" class="nav-link btn btn-link text-dark">
+                        <i class="fa-solid fa-share-from-square"></i>Изход
+                    </button>
                 </form>
             </li>
         }
         else
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">Здравейте @User.Identity?.Name!</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">Здравейте @User.Identity?.Name!<i class="fa-solid fa-user"></i></a>
             </li>
             <li class="nav-item">
                 <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
-                    <button type="submit" class="nav-link btn btn-link text-dark">Изход</button>
+                    <button type="submit" class="nav-link btn btn-link text-dark"><i class="fa-solid fa-share-from-square"></i>Изход</button>
                 </form>
             </li>
         }
@@ -32,10 +34,10 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Регистрация</a>
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register"><i class="fa-solid fa-globe"></i>Регистрация</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Вписване</a>
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login"><i class="fa-solid fa-pen-to-square"></i>Вписване</a>
         </li>
     }
 </ul>
