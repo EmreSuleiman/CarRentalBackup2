@@ -5,44 +5,45 @@ using CarRental3._0.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+// Add configuration
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+// Add DbContext with MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
-
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // Register the background service
 builder.Services.AddHostedService<CarStatusBackgroundService>();
 
-builder.Services.AddSingleton<IWebHostEnvironment>(provider =>
-    provider.GetRequiredService<IWebHostEnvironment>());
-
-// Use AppUser as the Identity user
+// Add Identity services
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+// Add authentication and session
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();
 
-builder.Services.AddControllersWithViews();
-
-builder.Services.AddRazorPages();
-
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+// Add repositories and services
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+
+// Add framework services
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Configure logging
+builder.Logging.ClearProviders().AddConsole();
 
 var app = builder.Build();
 
@@ -66,7 +67,7 @@ if (seedData)
     }
 }
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -79,8 +80,8 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseMiddleware<BlacklistMiddleware>();
 app.UseAuthorization();
@@ -90,4 +91,25 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-app.Run();
+// Diagnostic endpoint to verify services are running
+app.MapGet("/diagnostics", () =>
+{
+    return Results.Ok(new
+    {
+        Status = "Running",
+        Time = DateTime.UtcNow,
+        Database = builder.Configuration.GetConnectionString("DefaultConnection")
+    });
+});
+
+// Start the application
+try
+{
+    Console.WriteLine("Application starting...");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Application failed to start: {ex}");
+    throw;
+}
