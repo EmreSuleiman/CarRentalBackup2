@@ -2,6 +2,7 @@ using CarRental3._0.Data;
 using CarRental3._0.Interfaces;
 using CarRental3._0.Models;
 using CarRental3._0.Repository;
+using CarRental3._0.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +22,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddHostedService<CarStatusBackgroundService>();
 
 // Add Identity services
-builder.Services.AddIdentity<AppUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddErrorDescriber<CustomIdentityErrorDescriber>()
+.AddDefaultTokenProviders(); ;
 
 // Add authentication and session
 builder.Services.AddMemoryCache();
@@ -36,6 +46,7 @@ builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+
 
 // Add framework services
 builder.Services.AddControllersWithViews();
