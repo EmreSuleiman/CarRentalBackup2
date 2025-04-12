@@ -4,8 +4,15 @@
 @{
     ViewData["Title"] = "Dashboard";
 }
-
+<!-- Display login errors -->
+@if (TempData["Success"] != null)
+{
+    <div class="col-md-12 alert alert-success">
+        <span>@TempData["Success"]</span>
+    </div>
+}
 <h1>Профил</h1>
+
 
 <h2>Лична информация</h2>
 <p><strong>Име:</strong> @(Model.User?.FullName ?? "N/A")</p>
@@ -13,6 +20,7 @@
 
 @if (User.Identity.IsAuthenticated && User.IsInRole("user"))
 {
+
     <h2>История на наемания</h2>
     @if (Model.Rentals.Any())
     {
@@ -23,6 +31,7 @@
                     <th>Начало</th>
                     <th>Край</th>
                     <th>Обща цена</th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +42,15 @@
                         <td>@rental.RentalDate.ToShortDateString()</td>
                         <td>@rental.ReturnDate.ToShortDateString()</td>
                         <td>@rental.TotalCost.ToString("C", CultureInfo.CreateSpecificCulture("bg-BG"))</td>
+                        <td>
+                            @if (DateTime.Now < rental.ReturnDate)
+                            {
+                                <form asp-controller="Car" asp-action="ReturnCar" method="post">
+                                    <input type="hidden" name="rentalId" value="@rental.RentalId" />
+                                    <button type="submit" class="btn btn-warning">Върни предварително</button>
+                                </form>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>

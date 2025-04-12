@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Car>
 @using CarRental3._0.Interfaces
 @using CarRental3._0.Models
+@using System.Globalization
 @inject ILocationService LocationService
 
 @{
@@ -136,7 +137,7 @@
                                     }
                                 </div>
                                 <div class="car-price">
-                                    <span>@car.DailyRate.ToString("0.00") лв./ден</span>
+                                    <span>@car.DailyRate.ToString("C", new CultureInfo("bg-BG"))/ден</span>
                                     @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
                                     {
                                         <div class="admin-actions">

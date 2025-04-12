@@ -1,4 +1,5 @@
-﻿@model CarRental3._0.ViewModels.AdminDashboardViewModel
+﻿@using System.Globalization
+@model CarRental3._0.ViewModels.AdminDashboardViewModel
 
 @{
     ViewData["Title"] = "Admin Dashboard";
@@ -34,7 +35,7 @@
                         <td>@rental.AppUser.FullName (@rental.AppUser.Email)</td>
                         <td>@rental.RentalDate.ToShortDateString()</td>
                         <td>@rental.ReturnDate.ToShortDateString()</td>
-                        <td>@rental.TotalCost.ToString("C")</td>
+                        <td>@rental.TotalCost.ToString("C", new CultureInfo("bg-BG"))/ден</td>
                     </tr>
                 }
             </tbody>

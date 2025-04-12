@@ -37,31 +37,30 @@ namespace CarRental3._0.Controllers
 
             IEnumerable<Car> cars = await _carRepository.GetAll();
 
-            // Apply date filter
+
             if (startDate.HasValue && endDate.HasValue)
             {
                 cars = await _carRepository.GetAvailableCarsAsync(startDate.Value, endDate.Value);
             }
 
-            // Apply category filter
+ 
             if (!string.IsNullOrEmpty(category))
             {
                 cars = cars.Where(c => c.Category.ToString() == category);
             }
 
-            // Apply location filter
             if (locationId.HasValue)
             {
                 cars = cars.Where(c => c.LocationId == locationId);
             }
 
-            // Apply price filter
+
             if (maxPrice.HasValue)
             {
                 cars = cars.Where(c => c.DailyRate <= maxPrice);
             }
 
-            // Apply sorting
+
             switch (sortBy)
             {
                 case "price_asc":
@@ -135,7 +134,7 @@ namespace CarRental3._0.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Repopulate locations if validation fails
+
             createVM.Locations = _context.Locations.Select(l => new SelectListItem
             {
                 Value = l.Id.ToString(),
@@ -176,7 +175,6 @@ namespace CarRental3._0.Controllers
             return View(viewModel);
         }
 
-        // POST: Car/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditCarViewModel viewModel)
@@ -204,7 +202,7 @@ namespace CarRental3._0.Controllers
 
                 if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
                 {
-                    // Delete old image if exists
+
                     if (!string.IsNullOrEmpty(car.ImagePath))
                     {
                         _imageService.DeleteImage(car.ImagePath);
@@ -217,7 +215,7 @@ namespace CarRental3._0.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // If we got this far, something failed, redisplay form
+
             var locations = await _locationService.GetAllLocationsAsync();
             viewModel.Locations = locations.Select(l => new SelectListItem
             {
@@ -235,7 +233,7 @@ namespace CarRental3._0.Controllers
                 return NotFound();
             }
 
-            // Load location information
+
             car.Location = await _context.Locations.FindAsync(car.LocationId);
 
             var viewModel = new DeleteCarViewModel
@@ -258,7 +256,7 @@ namespace CarRental3._0.Controllers
             {
                 return NotFound();
             }
-            // Delete the image if it exists
+
             if (!string.IsNullOrEmpty(car.ImagePath))
             {
                 _imageService.DeleteImage(car.ImagePath);
@@ -287,7 +285,7 @@ namespace CarRental3._0.Controllers
         {
             if (rentalDate >= returnDate)
             {
-                TempData["Error"] = "Invalid rental period. The return date must be after the rental date.";
+                TempData["Error"] = "Невалиден период за наемане. Датата за връщане трябва да е преди тази за наемане.";
                 return RedirectToAction("Detail", new { id = carId });
             }
 
@@ -301,6 +299,14 @@ namespace CarRental3._0.Controllers
             if (car == null)
             {
                 return NotFound();
+            }
+
+
+            bool isAvailable = await _carRepository.IsCarAvailable(carId, rentalDate, returnDate);
+            if (!isAvailable)
+            {
+                TempData["Error"] = "Колата не е налична за избраните дати.";
+                return RedirectToAction("Detail", new { id = carId });
             }
 
             var rentalDays = (returnDate - rentalDate).Days;
@@ -318,11 +324,36 @@ namespace CarRental3._0.Controllers
             _context.Rentals.Add(rental);
             await _context.SaveChangesAsync();
 
-            car.Status = "Rented";
+            car.Status = "Наета!";
             _carRepository.Update(car);
 
-            TempData["Success"] = "Car rented successfully!";
+            TempData["Success"] = "Наета е успешно!";
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReturnCar(int rentalId)
+        {
+            var rental = await _context.Rentals
+                .Include(r => r.Car)
+                .FirstOrDefaultAsync(r => r.RentalId == rentalId);
+
+            if (rental == null)
+            {
+                return NotFound();
+            }
+
+
+            rental.Car.Status = "В маличност";
+            _carRepository.Update(rental.Car);
+
+
+
+            rental.ReturnDate = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Колата е върната успешно!";
+            return RedirectToAction("Index", "Dashboard");
         }
     }
 }

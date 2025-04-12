@@ -79,9 +79,10 @@ namespace CarRental3._0.Controllers
             var newUser = new AppUser()
             {
                 Email = registerVM.Email,
-                UserName = registerVM.Email, // Ensure UserName is set
+                UserName = registerVM.FullName,
                 FullName = registerVM.FullName,
-                Role = UserRoles.User
+                Role = UserRoles.User,
+                BlacklistReason = " "
             };
 
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);

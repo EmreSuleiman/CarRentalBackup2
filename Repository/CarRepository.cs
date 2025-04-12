@@ -84,6 +84,29 @@ namespace CarRental3._0.Repository
 
             return await query.ToListAsync();
         }
+        public async Task<bool> IsCarAvailable(int carId, DateTime startDate, DateTime endDate)
+        {
+            var conflictingRentals = await _context.Rentals
+                .Where(r => r.CarId == carId)
+                .ToListAsync();
+
+            foreach (var rental in conflictingRentals)
+            {
+                // Check if the requested period overlaps with the rental period
+                bool periodOverlap = rental.RentalDate <= endDate && rental.ReturnDate >= startDate;
+
+                // Check if car hasn't been returned yet
+                bool notReturned = !rental.ActualReturnDate.HasValue || rental.ActualReturnDate.Value > startDate;
+
+                if (periodOverlap && notReturned)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
 
         public bool Update(Car car)
         {

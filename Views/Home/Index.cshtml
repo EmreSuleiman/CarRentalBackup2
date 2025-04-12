@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<Car>
 @using CarRental3._0.Models
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Home Page";
@@ -34,7 +35,7 @@
                         <div class="car-card">
                             <img src="@car.ImagePath" alt="@car.Brand @car.Model" class="img-fluid">
                             <h3>@car.Brand @car.Model</h3>
-                            <p>@car.DailyRate лв./ден</p>
+                            <p>@car.DailyRate.ToString("C", new CultureInfo("bg-BG"))/ден</p>
                             <a href="/Car/Detail/@car.CarId" class="btn btn-primary">Наеми</a>
                         </div>
                     }
