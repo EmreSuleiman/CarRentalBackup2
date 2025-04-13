@@ -344,7 +344,7 @@ namespace CarRental3._0.Controllers
             }
 
 
-            rental.Car.Status = "В маличност";
+            rental.Car.Status = "В наличност";
             _carRepository.Update(rental.Car);
 
 
