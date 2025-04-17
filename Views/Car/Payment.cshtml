@@ -1,0 +1,97 @@
+﻿@using System.Globalization
+@model CarRental3._0.ViewModels.PaymentViewModel
+
+
+@{
+    ViewData["Title"] = "Плащане";
+}
+@if (TempData["Success"] != null)
+{
+    <div class="col-md-12 alert alert-success">
+        <span>@TempData["Success"]</span>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="col-md-12 alert alert-danger">
+        <span>@TempData["Error"]</span>
+    </div>
+}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Детайли за наема</h4>
+                </div>
+                <div class="card-body">
+                    <h5>@Model.CarBrand @Model.CarModel</h5>
+                    <p>Наемане от: @Model.RentalDate.ToShortDateString() до @Model.ReturnDate.ToShortDateString()</p>
+                    <p>Брой дни: @Model.RentalDays</p>
+                    <p>Цена на ден: @Model.DailyRate.ToString("C", new CultureInfo("bg-BG"))</p>
+                    <h5 class="text-success">Обща сума: @Model.TotalCost.ToString("C", new CultureInfo("bg-BG"))</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Платежна информация</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Rent" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="CarId" />
+                        <input type="hidden" asp-for="RentalDate" />
+                        <input type="hidden" asp-for="ReturnDate" />
+                        <input type="hidden" asp-for="DailyRate" />
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CardNumber" class="form-label">Номер на карта</label>
+                            <input asp-for="CardNumber" class="form-control" placeholder="1234 5678 9012 3456" />
+                            <span asp-validation-for="CardNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CardholderName" class="form-label">Име на картодържателя</label>
+                            <input asp-for="CardholderName" class="form-control" placeholder="Иван Иванов" />
+                            <span asp-validation-for="CardholderName" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="ExpirationDate" class="form-label">Валидност</label>
+                                <input asp-for="ExpirationDate" class="form-control" placeholder="MM/YY" />
+                                <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Cvv" class="form-label">CVV</label>
+                                <input asp-for="Cvv" class="form-control" placeholder="123" />
+                                <span asp-validation-for="Cvv" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Потвърди плащането</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Format card number with spaces
+        document.getElementById('CardNumber').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+        });
+
+        // Format expiration date
+        document.getElementById('ExpirationDate').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').replace(/(\d{2})(\d{0,2})/, '$1/$2');
+        });
+    </script>
+}

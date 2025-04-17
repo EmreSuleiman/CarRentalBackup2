@@ -3,6 +3,7 @@ using CarRental3._0.Interfaces;
 using CarRental3._0.Models;
 using CarRental3._0.Repository;
 using CarRental3._0.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -280,57 +281,129 @@ namespace CarRental3._0.Controllers
                 isAdmin = User.Identity.IsAuthenticated && User.IsInRole("admin")
             }));
         }
-        [HttpPost]
-        public async Task<IActionResult> Rent(int carId, DateTime rentalDate, DateTime returnDate)
+
+        // Luhn algorithm implementation
+        private bool IsValidCreditCard(string cardNumber)
         {
-            if (rentalDate >= returnDate)
+            cardNumber = cardNumber.Replace(" ", "").Replace("-", "");
+
+            if (string.IsNullOrEmpty(cardNumber) || cardNumber.Length < 13)
+                return false;
+
+            int sum = 0;
+            bool alternate = false;
+
+            for (int i = cardNumber.Length - 1; i >= 0; i--)
             {
-                TempData["Error"] = "Невалиден период за наемане. Датата за връщане трябва да е преди тази за наемане.";
-                return RedirectToAction("Detail", new { id = carId });
+                if (!char.IsDigit(cardNumber[i]))
+                    return false;
+
+                int digit = int.Parse(cardNumber[i].ToString());
+
+                if (alternate)
+                {
+                    digit *= 2;
+                    if (digit > 9)
+                        digit = (digit % 10) + 1;
+                }
+
+                sum += digit;
+                alternate = !alternate;
             }
 
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
+            return (sum % 10 == 0);
+        }
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Payment(int carId, DateTime rentalDate, DateTime returnDate)
+        {
             var car = await _carRepository.GetByIdAsync(carId);
             if (car == null)
             {
                 return NotFound();
             }
 
-
+            // Check availability
             bool isAvailable = await _carRepository.IsCarAvailable(carId, rentalDate, returnDate);
             if (!isAvailable)
             {
-                TempData["Error"] = "Колата не е налична за избраните дати.";
+                TempData["Error"] = "This car is not available for the selected dates.";
                 return RedirectToAction("Detail", new { id = carId });
             }
 
-            var rentalDays = (returnDate - rentalDate).Days;
-            var totalCost = car.DailyRate * rentalDays;
+            var model = new PaymentViewModel
+            {
+                CarId = carId,
+                RentalDate = rentalDate,
+                ReturnDate = returnDate,
+                CarBrand = car.Brand,
+                CarModel = car.Model,
+                DailyRate = car.DailyRate
+            };
+
+            return View(model);
+        }
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Car/Rent")]
+        public async Task<IActionResult> Rent(PaymentViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var carForDisplay = await _carRepository.GetByIdAsync(model.CarId);
+                if (carForDisplay != null)
+                {
+                    model.CarBrand = carForDisplay.Brand;
+                    model.CarModel = carForDisplay.Model;
+                    model.DailyRate = carForDisplay.DailyRate;
+                }
+                return View("Payment", model);
+            }
+
+            // Validate card using Luhn algorithm
+            if (!IsValidCreditCard(model.CardNumber))
+            {
+                ModelState.AddModelError("CardNumber", "Invalid credit card number");
+                var carForValidation = await _carRepository.GetByIdAsync(model.CarId);
+                if (carForValidation != null)
+                {
+                    model.CarBrand = carForValidation.Brand;
+                    model.CarModel = carForValidation.Model;
+                    model.DailyRate = carForValidation.DailyRate;
+                }
+                return View("Payment", model);
+            }
+
+            // Check car availability
+            bool isAvailable = await _carRepository.IsCarAvailable(model.CarId, model.RentalDate, model.ReturnDate);
+            if (!isAvailable)
+            {
+                TempData["Error"] = "This car is no longer available for the selected dates.";
+                return RedirectToAction("Detail", new { id = model.CarId });
+            }
+
+            // Process rental
+            var user = await _userManager.GetUserAsync(User);
+            var carToRent = await _carRepository.GetByIdAsync(model.CarId);
 
             var rental = new Rental
             {
-                RentalDate = rentalDate,
-                ReturnDate = returnDate,
-                TotalCost = totalCost,
+                RentalDate = model.RentalDate,
+                ReturnDate = model.ReturnDate,
+                TotalCost = model.TotalCost,
                 AppUserId = user.Id,
-                CarId = carId
+                CarId = model.CarId,
+                PaymentDetails = $"Card ending in {model.CardNumber.Substring(model.CardNumber.Length - 4)}"
             };
 
             _context.Rentals.Add(rental);
+            carToRent.Status = "Rented";
             await _context.SaveChangesAsync();
 
-            car.Status = "Наета!";
-            _carRepository.Update(car);
-
-            TempData["Success"] = "Наета е успешно!";
-            return RedirectToAction("Index");
+            TempData["Success"] = "Car rented successfully! Payment processed.";
+            return RedirectToAction("Index", "Dashboard");
         }
-
         [HttpPost]
         public async Task<IActionResult> ReturnCar(int rentalId)
         {

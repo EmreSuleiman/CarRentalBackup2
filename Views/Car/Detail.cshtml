@@ -109,7 +109,7 @@
 
                     <!-- Rent Form -->
                     <h4 class="mb-3">Наеми тази кола</h4>
-                    <form asp-action="Rent" method="post" class="needs-validation" novalidate>
+                    <form asp-action="Payment" method="get" class="needs-validation" novalidate>
                         <input type="hidden" name="CarId" value="@Model.CarId" />
 
                         <div class="row g-3">
@@ -136,20 +136,6 @@
                             <button type="submit" class="btn btn-primary btn-lg w-100">
                                 <i class="fas fa-car me-2"></i> Наеми сега
                             </button>
-
-                            @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
-                            {
-                                <div class="mt-2 d-flex justify-content-between">
-                                    <a asp-action="Edit" asp-route-id="@Model.CarId"
-                                       class="btn btn-outline-secondary">
-                                        <i class="fas fa-edit me-1"></i> Редактирай
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@Model.CarId"
-                                       class="btn btn-outline-danger">
-                                        <i class="fas fa-trash me-1"></i> Изтрий
-                                    </a>
-                                </div>
-                            }
                         </div>
                     </form>
                 </div>

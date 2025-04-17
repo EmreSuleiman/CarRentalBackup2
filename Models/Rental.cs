@@ -14,5 +14,6 @@
         public int CarId { get; set; }
         public Car Car { get; set; }
         public DateTime? ActualReturnDate { get; set; }
+        public string PaymentDetails { get; set; }
     }
 }
