@@ -351,26 +351,23 @@ namespace CarRental3._0.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Log all validation errors
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => new { x.Key, x.Value.Errors })
+                    .ToList();
+
+                foreach (var error in errors)
+                {
+                    Console.WriteLine($"Key: {error.Key}, Errors: {string.Join(", ", error.Errors.Select(e => e.ErrorMessage))}");
+                }
+
                 var carForDisplay = await _carRepository.GetByIdAsync(model.CarId);
                 if (carForDisplay != null)
                 {
                     model.CarBrand = carForDisplay.Brand;
                     model.CarModel = carForDisplay.Model;
                     model.DailyRate = carForDisplay.DailyRate;
-                }
-                return View("Payment", model);
-            }
-
-            // Validate card using Luhn algorithm
-            if (!IsValidCreditCard(model.CardNumber))
-            {
-                ModelState.AddModelError("CardNumber", "Invalid credit card number");
-                var carForValidation = await _carRepository.GetByIdAsync(model.CarId);
-                if (carForValidation != null)
-                {
-                    model.CarBrand = carForValidation.Brand;
-                    model.CarModel = carForValidation.Model;
-                    model.DailyRate = carForValidation.DailyRate;
                 }
                 return View("Payment", model);
             }
@@ -401,7 +398,7 @@ namespace CarRental3._0.Controllers
             carToRent.Status = "Rented";
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Car rented successfully! Payment processed.";
+            TempData["Success"] = "Колата е наета успешно! Плащането е проверено.";
             return RedirectToAction("Index", "Dashboard");
         }
         [HttpPost]

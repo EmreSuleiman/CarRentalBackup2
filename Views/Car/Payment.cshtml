@@ -40,12 +40,14 @@
                     <h4>Платежна информация</h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Rent" method="post">
+                    <form asp-action="Rent" method="post" id="payment-form">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="CarId" />
                         <input type="hidden" asp-for="RentalDate" />
                         <input type="hidden" asp-for="ReturnDate" />
                         <input type="hidden" asp-for="DailyRate" />
+                        <input type="hidden" asp-for="CarBrand" />
+                        <input type="hidden" asp-for="CarModel" />
 
                         <div class="form-group mb-3">
                             <label asp-for="CardNumber" class="form-label">Номер на карта</label>
@@ -72,7 +74,9 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Потвърди плащането</button>
+                        <button type="submit" class="btn btn-primary w-100" id="submit-button">
+                            Потвърди плащането
+                        </button>
                     </form>
                 </div>
             </div>
@@ -84,14 +88,25 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // Format card number with spaces
         document.getElementById('CardNumber').addEventListener('input', function(e) {
             this.value = this.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
         });
 
-        // Format expiration date
         document.getElementById('ExpirationDate').addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').replace(/(\d{2})(\d{0,2})/, '$1/$2');
+        });
+
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            console.log('Form submitting...');
+        });
+                document.getElementById('submit-button').addEventListener('click', function(e) {
+            console.log('Submit button clicked');
+            // Let the form submit normally
+        });
+
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            console.log('Form submitting...');
+            // Let the form submit normally
         });
     </script>
 }
