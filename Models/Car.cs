@@ -19,19 +19,20 @@ namespace CarRental3._0.Models
         public decimal DailyRate { get; set; }
 
         [Required]
-        public CarCategory Category { get; set; } = CarCategory.Икономична;
+        public CarCategory Category { get; set; } = CarCategory.Economy;
 
         [Required]
         public string Status { get; set; } = "В наличност";
 
-        public string? ImagePath { get; set; }  // Make nullable
+        public string? Image { get; set; }  // Cloudinary URL
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public int? LocationId { get; set; }
-        public Location? Location { get; set; }  // Make nullable
+        public Location? Location { get; set; }
 
-        public ICollection<Rental> Rentals { get; set; } = new List<Rental>();  // Initialize
+        public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
+        public string? PublicId { get; set; }
     }
 }

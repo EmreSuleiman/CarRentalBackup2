@@ -32,7 +32,7 @@
                     foreach (var car in loopCars)
                     {
                         <div class="car-card">
-                            <img src="@car.ImagePath" alt="@car.Brand @car.Model" class="img-fluid">
+                            <img src="@car.Image" alt="@car.Brand @car.Model" class="img-fluid">
                             <h3>@car.Brand @car.Model</h3>
                             <p>@car.DailyRate.ToString("C", new CultureInfo("bg-BG"))/ден</p>
                             <a href="/Car/Detail/@car.CarId" class="btn btn-primary">Наеми</a>

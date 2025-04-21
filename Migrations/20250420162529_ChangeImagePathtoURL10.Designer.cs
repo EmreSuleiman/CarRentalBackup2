@@ -4,6 +4,7 @@ using CarRental3._0.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRental3._0.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250420162529_ChangeImagePathtoURL10")]
+    partial class ChangeImagePathtoURL10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,9 +143,6 @@ namespace CarRental3._0.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PublicId")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -165,12 +165,12 @@ namespace CarRental3._0.Migrations
                             CarId = 1,
                             Brand = "Toyota",
                             Category = 0,
-                            CreatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2552),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2203),
                             DailyRate = 30m,
                             LocationId = 1,
                             Model = "Camry",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2553),
+                            UpdatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2204),
                             Year = 2024
                         },
                         new
@@ -178,12 +178,12 @@ namespace CarRental3._0.Migrations
                             CarId = 2,
                             Brand = "Toyota",
                             Category = 0,
-                            CreatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2555),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2206),
                             DailyRate = 40m,
                             LocationId = 3,
                             Model = "Corolla",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2555),
+                            UpdatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2207),
                             Year = 2023
                         },
                         new
@@ -191,12 +191,12 @@ namespace CarRental3._0.Migrations
                             CarId = 3,
                             Brand = "Ford",
                             Category = 2,
-                            CreatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2560),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2212),
                             DailyRate = 60m,
                             LocationId = 2,
                             Model = "Transit",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2561),
+                            UpdatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2212),
                             Year = 2022
                         },
                         new
@@ -204,12 +204,12 @@ namespace CarRental3._0.Migrations
                             CarId = 4,
                             Brand = "BMW",
                             Category = 1,
-                            CreatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2564),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2216),
                             DailyRate = 120m,
                             LocationId = 1,
                             Model = "X5",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2565),
+                            UpdatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2217),
                             Year = 2023
                         },
                         new
@@ -217,12 +217,12 @@ namespace CarRental3._0.Migrations
                             CarId = 5,
                             Brand = "Volkswagen",
                             Category = 2,
-                            CreatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2568),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2220),
                             DailyRate = 110m,
                             LocationId = 3,
                             Model = "Transporter",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2569),
+                            UpdatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2221),
                             Year = 2013
                         },
                         new
@@ -230,12 +230,12 @@ namespace CarRental3._0.Migrations
                             CarId = 6,
                             Brand = "Audi",
                             Category = 1,
-                            CreatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2572),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2224),
                             DailyRate = 90m,
                             LocationId = 4,
                             Model = "A4",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2573),
+                            UpdatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2225),
                             Year = 2022
                         },
                         new
@@ -243,12 +243,12 @@ namespace CarRental3._0.Migrations
                             CarId = 7,
                             Brand = "Audi",
                             Category = 1,
-                            CreatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2576),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2228),
                             DailyRate = 130m,
                             LocationId = 2,
                             Model = "A6",
                             Status = "В наличност",
-                            UpdatedAt = new DateTime(2025, 4, 20, 19, 15, 58, 788, DateTimeKind.Utc).AddTicks(2576),
+                            UpdatedAt = new DateTime(2025, 4, 20, 16, 25, 27, 724, DateTimeKind.Utc).AddTicks(2229),
                             Year = 2023
                         });
                 });

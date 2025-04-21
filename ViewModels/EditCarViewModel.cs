@@ -9,7 +9,7 @@ namespace CarRental3._0.ViewModels
         public int CarId { get; set; }
 
         [Required]
-        public string Brand { get; set; } = string.Empty;  // Initialize with default
+        public string Brand { get; set; } = string.Empty;
 
         [Required]
         public string Model { get; set; } = string.Empty;
@@ -26,13 +26,11 @@ namespace CarRental3._0.ViewModels
         [Required]
         public string Status { get; set; } = "В наличност";
 
-        public string? ImagePath { get; set; }  // Make nullable
-
-        public IFormFile? ImageFile { get; set; }  // Make nullable
+        public string? Image { get; set; }
+        public IFormFile? ImageFile { get; set; }
 
         public int? LocationId { get; set; }
-
-        public IEnumerable<SelectListItem> Locations { get; set; } = new List<SelectListItem>();  // Initialize
+        public IEnumerable<SelectListItem> Locations { get; set; } = new List<SelectListItem>();
         public string? ExistingImagePath { get; internal set; }
     }
 }

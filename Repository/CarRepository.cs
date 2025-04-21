@@ -9,9 +9,11 @@ namespace CarRental3._0.Repository
     {
 
         private readonly ApplicationDbContext _context;
-        public CarRepository(ApplicationDbContext context)
+        private readonly ILogger<CarRepository> _logger;
+        public CarRepository(ApplicationDbContext context, ILogger<CarRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public bool Add(Car car)
         {
@@ -28,8 +30,28 @@ namespace CarRental3._0.Repository
 
         public bool Save()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            try
+            {
+                var saved = _context.SaveChanges();
+                if (saved > 0)
+                {
+                    _logger.LogInformation("Changes saved successfully");
+                    return true;
+                }
+
+                _logger.LogWarning("No changes were saved to the database");
+                return false;
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Database update error occurred");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while saving changes");
+                return false;
+            }
         }
 
         public async Task<IEnumerable<Car>> GetAll()

@@ -7,7 +7,7 @@ namespace CarRental3._0.ViewModels
     public class CarCreateViewModel
     {
         [Required]
-        public string Brand { get; set; } = string.Empty;  // Initialize with default
+        public string Brand { get; set; } = string.Empty;
 
         [Required]
         public string Model { get; set; } = string.Empty;
@@ -24,12 +24,16 @@ namespace CarRental3._0.ViewModels
         [Required]
         public string Status { get; set; } = "В наличност";
 
-        public string? ImagePath { get; set; }  // Make nullable
-
-        public IFormFile? ImageFile { get; set; }  // Make nullable
-
+        [Required(ErrorMessage = "Моля изберете локация")]
+        [Display(Name = "Локация")]
         public int? LocationId { get; set; }
 
-        public IEnumerable<SelectListItem> Locations { get; set; }
+        // ← No [Required] here, and ensure it's never null:
+        public List<SelectListItem> Locations { get; set; } = new();
+
+        // File upload:
+        [Required]
+        public IFormFile Image { get; set; }
     }
+
 }

@@ -2,66 +2,73 @@
 @using CarRental3._0.Interfaces
 @inject ILocationService LocationService
 
+
 @{
     ViewData["Title"] = "Добави нова кола";
 }
-<form method="post" asp-action="Create">
-    @*Brand*@
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <partial name="_ValidationScriptsPartial" />
+
+    <input asp-for="Status" type="hidden" />
+
     <div class="form-group">
-        <label asp-for="Brand">Марка</label>
-        <input asp-for="Brand" type="brand" class="form-control" placeholder="Въведи марка">
+        <label asp-for="Brand"></label>
+        <input asp-for="Brand" class="form-control" />
         <span asp-validation-for="Brand" class="text-danger"></span>
     </div>
 
-    @*Model*@
     <div class="form-group">
-        <label asp-for="Model">Модел</label>
-        <input asp-for="Model" type="Model" class="form-control" placeholder="Въведи модел">
+        <label asp-for="Model"></label>
+        <input asp-for="Model" class="form-control" />
         <span asp-validation-for="Model" class="text-danger"></span>
     </div>
 
-    @*Year*@
     <div class="form-group">
-        <label asp-for="Year">Година</label>
-        <input asp-for="Year" type="Year" class="form-control" placeholder="Въведи година">
+        <label asp-for="Year"></label>
+        <input asp-for="Year" class="form-control" />
         <span asp-validation-for="Year" class="text-danger"></span>
     </div>
 
-    @*Location*@
+    <!-- 🔑 The Location dropdown -->
     <div class="form-group">
         <label asp-for="LocationId"></label>
-        <select asp-for="LocationId" asp-items="Model.Locations" class="form-control">
+        <select asp-for="LocationId" class="form-control" asp-items="Model.Locations">
             <option value="">-- Изберете локация --</option>
         </select>
         <span asp-validation-for="LocationId" class="text-danger"></span>
     </div>
 
-    @*DailyRate*@
     <div class="form-group">
-        <label asp-for="DailyRate" for="exampleInputDailyRate">Дневна такса</label>
-        <input asp-for="DailyRate" type="DailyRate" class="form-control" placeholder="Въведи дневна такса">
+        <label asp-for="DailyRate"></label>
+        <input asp-for="DailyRate" class="form-control" />
         <span asp-validation-for="DailyRate" class="text-danger"></span>
     </div>
 
-    @*Category*@
-    <div>
-
-        <label asp-for="Category">Категория</label>
-        <select asp-for="Category" class="form-control">
-            <option value="Икономична">Икономична</option>
-            <option value="Луксозна">Луксозна</option>
-            <option value="Ван">Ван</option>
+    <div class="form-group">
+        <label asp-for="Category"></label>
+        <select asp-for="Category"
+                class="form-control"
+                asp-items="Html.GetEnumSelectList<CarCategory>()">
         </select>
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
-
-    @*Image*@
     <div class="form-group">
-        <label asp-for="ImageFile"></label>
-        <input type="file" asp-for="ImageFile" class="form-control" />
-        <span asp-validation-for="ImageFile" class="text-danger"></span>
+        <label asp-for="Image"></label>
+        <input asp-for="Image" type="file" class="form-control" />
+        <span asp-validation-for="Image" class="text-danger"></span>
+        <small class="form-text text-muted">
+            Макс. 5MB; JPG, JPEG, PNG.
+        </small>
     </div>
-
 
     <button type="submit" class="btn btn-primary">Добави</button>
 </form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

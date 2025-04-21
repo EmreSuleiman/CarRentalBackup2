@@ -1,9 +1,14 @@
-﻿namespace CarRental3._0.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CarRental3._0.Models
 {
     public enum CarCategory
     {
-        Икономична, // Икономични
-        Луксозна,     // Луксозни
-        Ван         // Ванове
+        [Display(Name = "Икономична")]
+        Economy,
+        [Display(Name = "Луксозна")]
+        Luxury,
+        [Display(Name = "Ван")]
+        Van
     }
 }

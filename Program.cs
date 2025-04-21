@@ -1,4 +1,5 @@
 using CarRental3._0.Data;
+using CarRental3._0.Helpers;
 using CarRental3._0.Interfaces;
 using CarRental3._0.Models;
 using CarRental3._0.Repository;
@@ -42,10 +43,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie();
 
 // Add repositories and services
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<ILocationService, LocationService>();
-builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 
 // Add framework services

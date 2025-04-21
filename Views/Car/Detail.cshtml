@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
-@model CarRental3._0.Models.Car
+@using CarRental3._0.Models
+@model Car
 
 @{
     ViewData["Title"] = "Детайли за колата";
@@ -21,7 +22,7 @@
         <div class="col-md-6">
             <!-- Car Image with Shadow Effect -->
             <div class="card shadow-sm mb-4">
-                <img src="@Model.ImagePath" alt="@Model.Brand @Model.Model" class="img-fluid rounded" style="max-height: 500px; width: 100%; object-fit: cover;">
+                <img src="@Model.Image" alt="@Model.Brand @Model.Model" class="img-fluid rounded" style="max-height: 500px; width: 100%; object-fit: cover;">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-map-marker-alt"></i> Локация</h5>
                     @if (Model.Location != null)
@@ -73,15 +74,15 @@
                     <div class="mb-3">
                         @switch (@Model.Category)
                         {
-                            case CarCategory.Икономична:
+                            case CarCategory.Economy:
                                 <span class="badge bg-success fs-6">Ниски разходи</span>
                                 <p class="mt-2 text-muted">Идеален избор за икономично пътуване</p>
                                 break;
-                            case CarCategory.Луксозна:
+                            case CarCategory.Luxury:
                                 <span class="badge bg-warning text-dark fs-6">Премиум класа</span>
                                 <p class="mt-2 text-muted">Гарантирано качество и комфорт</p>
                                 break;
-                            case CarCategory.Ван:
+                            case CarCategory.Van:
                                 <span class="badge bg-info text-dark fs-6">Товарен</span>
                                 <p class="mt-2 text-muted">Идеален за превоз на товари</p>
                                 break;

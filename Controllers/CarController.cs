@@ -2,6 +2,7 @@
 using CarRental3._0.Interfaces;
 using CarRental3._0.Models;
 using CarRental3._0.Repository;
+using CarRental3._0.Services;
 using CarRental3._0.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,14 +18,16 @@ namespace CarRental3._0.Controllers
         private readonly ICarRepository _carRepository;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILocationService _locationService;
-        private readonly IImageService _imageService;
-        public CarController(ApplicationDbContext context, ICarRepository carRepository, UserManager<AppUser> userManager, ILocationService locationService, IImageService imageService)
+        private readonly IPhotoService _imageService;
+        private readonly ILogger<CarRepository> _logger;
+        public CarController(ApplicationDbContext context, ICarRepository carRepository, UserManager<AppUser> userManager, ILocationService locationService, IPhotoService imageService, ILogger<CarRepository> logger)
         {
             _context = context;
             _carRepository = carRepository;
             _userManager = userManager;
             _locationService = locationService;
             _imageService = imageService;
+            _logger = logger;
         }
         public async Task<IActionResult> Index(string category, DateTime? startDate, DateTime? endDate,
     string sortBy, int? locationId, decimal? maxPrice)
@@ -97,52 +100,95 @@ namespace CarRental3._0.Controllers
 
             return View(car);
         }
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> Create()
         {
-            var model = new CarCreateViewModel
+            var vm = new CarCreateViewModel
             {
-                Locations = _context.Locations.Select(l => new SelectListItem
-                {
-                    Value = l.Id.ToString(),
-                    Text = l.Name
-                })
+                // Populate the dropdown on GET
+                Locations = (await _locationService.GetAllLocationsAsync())
+                    .Select(l => new SelectListItem
+                    {
+                        Value = l.Id.ToString(),
+                        Text = l.Name
+                    })
+                    .ToList()
             };
-            return View(model);
+            return View(vm);
         }
 
+
+
         [HttpPost]
-        public async Task<IActionResult> Create(CarCreateViewModel createVM)
+        public async Task<IActionResult> Create(CarCreateViewModel vm)
         {
-            if (ModelState.IsValid)
+            vm.Locations = await _locationService
+                    .GetAllLocationsAsync()
+                    .ContinueWith(t => t.Result.Select(l => new SelectListItem
+                    {
+                        Value = l.Id.ToString(),
+                        Text = l.Name
+                    }).ToList());
+
+            if (!ModelState.IsValid)
             {
-                var car = new Car
-                {
-                    Brand = createVM.Brand,
-                    Model = createVM.Model,
-                    Year = createVM.Year,
-                    DailyRate = createVM.DailyRate,
-                    Category = createVM.Category,
-                    Status = createVM.Status,
-                    LocationId = createVM.LocationId
-                };
-
-                if (createVM.ImageFile != null)
-                {
-                    car.ImagePath = await _imageService.SaveImageAsync(createVM.ImageFile);
-                }
-
-                _carRepository.Add(car);
-                return RedirectToAction("Index");
+                _logger.LogWarning("Validation failed: " +
+                    string.Join(" | ", ModelState
+                        .Where(kv => kv.Value.Errors.Any())
+                        .Select(kv => $"{kv.Key}=[{string.Join(",", kv.Value.Errors.Select(e => e.ErrorMessage))}]")));
+                return View(vm);
             }
 
-
-            createVM.Locations = _context.Locations.Select(l => new SelectListItem
+            try
             {
-                Value = l.Id.ToString(),
-                Text = l.Name
-            });
+                var result = await _imageService.AddPhotoAsync(vm.Image);
+                if (result.Error != null)
+                {
+                    ModelState.AddModelError(
+                        "Image",
+                        $"Грешка при качване на снимка: {result.Error.Message}"
+                    );
+                    return View(vm);
+                }
 
-            return View(createVM);
+                // 2) All good — create and save
+                var car = new Car
+                {
+                    Brand = vm.Brand,
+                    Model = vm.Model,
+                    Year = vm.Year,
+                    DailyRate = vm.DailyRate,
+                    Image = result.Url.ToString(),
+                    PublicId = result.PublicId,
+                    Category = vm.Category,
+                    Status = vm.Status,
+                    LocationId = vm.LocationId.Value
+                };
+
+                _carRepository.Add(car);
+                if (!_carRepository.Save())
+                {
+                    ModelState.AddModelError("", "Неуспешно записване в базата данни");
+                    return View(vm);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                // Log the error
+                _logger.LogError(ex, "Error creating car listing");
+
+                ModelState.AddModelError("", "An error occurred while creating the car listing");
+                vm.Locations = _context.Locations
+                    .Select(l => new SelectListItem
+                    {
+                        Value = l.Id.ToString(),
+                        Text = l.Name
+                    })
+                    .ToList();
+                return View(vm);
+            }
         }
         public async Task<IActionResult> Edit(int id)
         {
@@ -163,7 +209,7 @@ namespace CarRental3._0.Controllers
                 DailyRate = car.DailyRate,
                 Category = car.Category,
                 Status = car.Status,
-                ExistingImagePath = car.ImagePath,
+                ExistingImagePath = car.Image,
                 LocationId = car.LocationId,
                 Locations = locations.Select(l => new SelectListItem
                 {
@@ -203,19 +249,18 @@ namespace CarRental3._0.Controllers
 
                 if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
                 {
-
-                    if (!string.IsNullOrEmpty(car.ImagePath))
+                    if (!string.IsNullOrEmpty(car.Image))
                     {
-                        _imageService.DeleteImage(car.ImagePath);
+                        await _imageService.DeletePhotoAsync(car.Image);
                     }
 
-                    car.ImagePath = await _imageService.SaveImageAsync(viewModel.ImageFile);
+                    var uploadResult = await _imageService.AddPhotoAsync(viewModel.ImageFile);
+                    car.Image = uploadResult.Url.ToString();
                 }
 
                 _carRepository.Update(car);
                 return RedirectToAction(nameof(Index));
             }
-
 
             var locations = await _locationService.GetAllLocationsAsync();
             viewModel.Locations = locations.Select(l => new SelectListItem
@@ -258,9 +303,9 @@ namespace CarRental3._0.Controllers
                 return NotFound();
             }
 
-            if (!string.IsNullOrEmpty(car.ImagePath))
+            if (!string.IsNullOrEmpty(car.Image))
             {
-                _imageService.DeleteImage(car.ImagePath);
+                _imageService.DeletePhotoAsync(car.Image);
             }
 
             _carRepository.Delete(car);
@@ -276,7 +321,7 @@ namespace CarRental3._0.Controllers
                 brand = c.Brand,
                 model = c.Model,
                 dailyRate = c.DailyRate,
-                image = c.ImagePath,
+                image = c.Image,
                 status = c.Status,
                 isAdmin = User.Identity.IsAuthenticated && User.IsInRole("admin")
             }));
