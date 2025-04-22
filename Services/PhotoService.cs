@@ -28,7 +28,7 @@ namespace CarRental3._0.Services
             {
                 if (file == null || file.Length == 0)
                 {
-                    throw new ArgumentException("File is empty");
+                    throw new ArgumentException("Файлът е празен");
                 }
 
                 // Validate file type
@@ -36,13 +36,13 @@ namespace CarRental3._0.Services
                 var extension = Path.GetExtension(file.FileName).ToLower();
                 if (!validExtensions.Contains(extension))
                 {
-                    throw new ArgumentException("Invalid file type");
+                    throw new ArgumentException("Невалиден файл");
                 }
 
                 // Validate file size (max 5MB)
                 if (file.Length > 5 * 1024 * 1024)
                 {
-                    throw new ArgumentException("File size exceeds 5MB");
+                    throw new ArgumentException("Файлът е по-голям от 5MB");
                 }
 
                 using var stream = file.OpenReadStream();
@@ -93,7 +93,6 @@ namespace CarRental3._0.Services
 
         private string GetPublicIdFromUrl(string url)
         {
-            // Cloudinary URLs typically have the public ID in the path
             var uri = new Uri(url);
             var segments = uri.Segments;
             var lastSegment = segments.Last();

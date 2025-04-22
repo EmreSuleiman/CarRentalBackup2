@@ -90,19 +90,12 @@ namespace CarRental3._0.Controllers
             if (newUserResponse.Succeeded)
             {
                 await _userManager.AddToRoleAsync(newUser, UserRoles.User);
-
-                // Log the successful registration
                 Console.WriteLine($"Потребител {newUser.Email} се регистрира успешно.");
-
-                // Sign in the user after registration
                 await _signInManager.SignInAsync(newUser, isPersistent: false);
-
-                // Redirect to a success page or home page
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                // Log errors
                 foreach (var error in newUserResponse.Errors)
                 {
                     Console.WriteLine($"Грешка при регистрация: {error.Description}");
@@ -139,7 +132,6 @@ namespace CarRental3._0.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BlacklistUser(string userId, string reason)
         {
-            // Prevent self-blacklisting
             if (userId == _userManager.GetUserId(User))
             {
                 TempData["Error"] = "Не е възможно да добавите себе си в Черният списък.";
@@ -155,7 +147,6 @@ namespace CarRental3._0.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Sign out the user if they're currently logged in
                     var isCurrentUser = user.Id == _userManager.GetUserId(User);
                     if (!isCurrentUser)
                     {

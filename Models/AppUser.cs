@@ -11,8 +11,6 @@ namespace CarRental3._0.Models
         public bool IsBlacklisted { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation properties
         public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
         public string BlacklistReason { get; set; }
     }

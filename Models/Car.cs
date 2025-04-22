@@ -24,7 +24,7 @@ namespace CarRental3._0.Models
         [Required]
         public string Status { get; set; } = "В наличност";
 
-        public string? Image { get; set; }  // Cloudinary URL
+        public string? Image { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

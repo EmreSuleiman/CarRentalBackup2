@@ -27,19 +27,19 @@ namespace CarRental3._0.Controllers
                 .Include(r => r.AppUser)
                 .ToListAsync();
 
-            var usersList = await _userManager.Users.ToListAsync(); // First, get all users
+            var usersList = await _userManager.Users.ToListAsync();
 
             var users = new List<UserViewModel>();
 
             foreach (var user in usersList)
             {
-                var roles = await _userManager.GetRolesAsync(user); // Asynchronously get roles for each user
+                var roles = await _userManager.GetRolesAsync(user);
                 users.Add(new UserViewModel
                 {
                     Id = user.Id,
                     FullName = user.FullName,
                     Email = user.Email,
-                    Role = roles.FirstOrDefault(), // Assign first role (or null if none)
+                    Role = roles.FirstOrDefault(),
                     IsBlacklisted = user.IsBlacklisted
                 });
             }
@@ -64,11 +64,7 @@ namespace CarRental3._0.Controllers
             if (user != null)
             {
                 user.IsBlacklisted = true;
-                // You could store the reason in a separate table or add a property to AppUser
                 await _userManager.UpdateAsync(user);
-
-                // Optionally send an email notification
-                // await _emailService.SendBlacklistNotification(user.Email, reason);
             }
             _logger.LogInformation($"Потребителят {User.Identity.Name} вкара в ченият списък {user.Email}. Причина: {reason}");
             return RedirectToAction("Dashboard");

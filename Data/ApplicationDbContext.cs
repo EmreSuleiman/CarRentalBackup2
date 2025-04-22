@@ -36,10 +36,11 @@ namespace CarRental3._0.Data
                     Model = "Camry",
                     Year = 2024,
                     DailyRate = 30,
-                    Category = CarCategory.Economy, // Use enum value
+                    Category = CarCategory.Economy,
                     LocationId = 1,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
+                    Image = "https://res.cloudinary.com/dgpj1oq6q/image/upload/v1745347666/Toyota-Camry_g1gdux.png"
                 },
                 new Car
                 {
@@ -48,10 +49,11 @@ namespace CarRental3._0.Data
                     Model = "Corolla",
                     Year = 2023,
                     DailyRate = 40,
-                    Category = CarCategory.Economy, // Use enum value
+                    Category = CarCategory.Economy,
                     Status = "В наличност",
                     LocationId = 3,
-                    
+                    Image = "https://res.cloudinary.com/dgpj1oq6q/image/upload/v1745347471/ibepkqn1ejafg2km95s7.png"
+
                 },
                 new Car
                 {
@@ -63,6 +65,7 @@ namespace CarRental3._0.Data
                     Category = CarCategory.Van,
                     LocationId = 2,
                     Status = "В наличност",
+                    Image = "https://res.cloudinary.com/dgpj1oq6q/image/upload/v1745347665/Ford-Transit-Connect_jnyuvl.png"
                 },
                 new Car
                 {
@@ -74,6 +77,7 @@ namespace CarRental3._0.Data
                     Category = CarCategory.Luxury,
                     Status = "В наличност",
                     LocationId = 1,
+                    Image = "https://res.cloudinary.com/dgpj1oq6q/image/upload/v1745347663/BMW-X5_viwmw2.png"
                 },
                 new Car
                 {
@@ -85,6 +89,7 @@ namespace CarRental3._0.Data
                     Category = CarCategory.Van,
                     LocationId = 3,
                     Status = "В наличност",
+                    Image = "https://res.cloudinary.com/dgpj1oq6q/image/upload/v1745347662/VW-Transporter_c9imzq.png"
                 },
                 new Car
                 {
@@ -96,7 +101,7 @@ namespace CarRental3._0.Data
                     Category = CarCategory.Luxury,
                     Status = "В наличност",
                     LocationId = 4,
-                    
+                    Image = "https://res.cloudinary.com/dgpj1oq6q/image/upload/v1745347663/Audi-A4_dr3l9v.png"
                 },
                 new Car
                 {
@@ -105,10 +110,22 @@ namespace CarRental3._0.Data
                     Model = "A6",
                     Year = 2023,
                     DailyRate = 130,
-                    Category = CarCategory.Luxury, // Use enum value
+                    Category = CarCategory.Luxury,
                     Status = "В наличност",
                     LocationId = 2,
-                    
+                    Image = "https://res.cloudinary.com/dgpj1oq6q/image/upload/v1745347891/Audi-A6_ji8clh.png"
+                },
+                new Car
+                {
+                    CarId = 8,
+                    Brand = "Toyota",
+                    Model = "Yaris",
+                    Year = 2025,
+                    DailyRate = 90,
+                    Category = CarCategory.Economy,
+                    Status = "В наличност",
+                    LocationId = 4,
+                    Image = "https://res.cloudinary.com/dgpj1oq6q/image/upload/v1745348068/yaris_ssv9tt.png"
                 }
             ); 
         }

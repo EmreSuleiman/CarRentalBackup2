@@ -16,26 +16,25 @@
     <input asp-for="Status" type="hidden" />
 
     <div class="form-group">
-        <label asp-for="Brand"></label>
+        <label asp-for="Brand">Марка</label>
         <input asp-for="Brand" class="form-control" />
         <span asp-validation-for="Brand" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Model"></label>
+        <label asp-for="Model">Модел</label>
         <input asp-for="Model" class="form-control" />
         <span asp-validation-for="Model" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Year"></label>
+        <label asp-for="Year">Година</label>
         <input asp-for="Year" class="form-control" />
         <span asp-validation-for="Year" class="text-danger"></span>
     </div>
 
-    <!-- 🔑 The Location dropdown -->
     <div class="form-group">
-        <label asp-for="LocationId"></label>
+        <label asp-for="LocationId">Локация</label>
         <select asp-for="LocationId" class="form-control" asp-items="Model.Locations">
             <option value="">-- Изберете локация --</option>
         </select>
@@ -43,13 +42,13 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="DailyRate"></label>
+        <label asp-for="DailyRate">Дневна такса</label>
         <input asp-for="DailyRate" class="form-control" />
         <span asp-validation-for="DailyRate" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Category"></label>
+        <label asp-for="Category">Категория</label>
         <select asp-for="Category"
                 class="form-control"
                 asp-items="Html.GetEnumSelectList<CarCategory>()">
@@ -57,7 +56,7 @@
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Image"></label>
+        <label asp-for="Image">Изображение</label>
         <input asp-for="Image" type="file" class="form-control" />
         <span asp-validation-for="Image" class="text-danger"></span>
         <small class="form-text text-muted">

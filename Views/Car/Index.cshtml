@@ -26,18 +26,13 @@
     }
 
     <div class="catalogue-container">
-        <!-- Left Sidebar - Filters -->
         <div class="filter-sidebar">
             <h3>Филтри</h3>
-
-            <!-- Date Range Picker -->
             <div class="filter-section">
                 <h5>Период за резервации</h5>
                 <input type="text" id="dateRangePicker" class="form-control" placeholder="Избери период"
-                       value="@(ViewBag.StartDate != null && ViewBag.EndDate != null ? $"{ViewBag.StartDate} to {ViewBag.EndDate}" : "")">
+                value="@(ViewBag.StartDate != null && ViewBag.EndDate != null ? $"{ViewBag.StartDate} to {ViewBag.EndDate}" : "")">
             </div>
-
-            <!-- Location Picker -->
             <div class="form-group mb-3">
                 <label for="locationFilter">Локация:</label>
                 <select id="locationFilter" class="form-control">
@@ -48,8 +43,6 @@
                     }
                 </select>
             </div>
-
-            <!-- Category Filter -->
             <div class="filter-section">
                 <h5>Категория</h5>
                 <div class="category-options">
@@ -81,7 +74,7 @@
                 <h5>Максимална цена (лв./ден)</h5>
                 <div class="price-range">
                     <input type="range" class="form-range" min="0" max="200" step="10" id="priceRange"
-                           value="@(ViewBag.MaxPrice ?? 200)">
+                    value="@(ViewBag.MaxPrice ?? 200)">
                     <div class="price-values">
                         <span>0</span>
                         <span>50</span>
@@ -130,7 +123,19 @@
                                 <h4>@car.Brand @car.Model</h4>
                                 <div class="car-specs">
                                     <span><i class="fas fa-calendar-alt"></i> @car.Year</span>
-                                    <span><i class="fas fa-tag"></i> @car.Category</span>
+                                    @if(car.Category == CarCategory.Economy)
+                                    {
+                                        <span><i class="fas fa-tag"></i> Икономична</span>
+                                    }
+                                    else if(car.Category == CarCategory.Luxury)
+                                    {
+                                        <span><i class="fas fa-tag"></i> Луксозна</span>
+                                    }
+                                    else
+                                    {
+                                        <span><i class="fas fa-tag"></i> Ван</span>
+                                    }
+
                                     @if (car.Location != null)
                                     {
                                         <span><i class="fas fa-map-marker-alt"></i> @car.Location.Name</span>

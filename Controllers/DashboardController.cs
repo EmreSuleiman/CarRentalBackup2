@@ -20,7 +20,7 @@ namespace CarRental3._0.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var userId = _userManager.GetUserId(User); // Get the current user's ID
+            var userId = _userManager.GetUserId(User);
             var user = await _dashboardRepository.GetUserByIdAsync(userId);
             var rentals = await _dashboardRepository.GetUserRentalsAsync(userId);
 

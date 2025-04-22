@@ -35,21 +35,21 @@ namespace CarRental3._0.Repository
                 var saved = _context.SaveChanges();
                 if (saved > 0)
                 {
-                    _logger.LogInformation("Changes saved successfully");
+                    _logger.LogInformation("Промените са запазени успешно");
                     return true;
                 }
 
-                _logger.LogWarning("No changes were saved to the database");
+                _logger.LogWarning("Не бяха запазени никакви промени");
                 return false;
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogError(ex, "Database update error occurred");
+                _logger.LogError(ex, "Възникна грешка при актуализирането на базата данни");
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while saving changes");
+                _logger.LogError(ex, "Възникна грешка при запазването на промените");
                 return false;
             }
         }
@@ -114,10 +114,7 @@ namespace CarRental3._0.Repository
 
             foreach (var rental in conflictingRentals)
             {
-                // Check if the requested period overlaps with the rental period
                 bool periodOverlap = rental.RentalDate <= endDate && rental.ReturnDate >= startDate;
-
-                // Check if car hasn't been returned yet
                 bool notReturned = !rental.ActualReturnDate.HasValue || rental.ActualReturnDate.Value > startDate;
 
                 if (periodOverlap && notReturned)

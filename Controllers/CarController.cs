@@ -80,7 +80,6 @@ namespace CarRental3._0.Controllers
                     cars = cars.OrderByDescending(c => c.Year);
                     break;
                 default:
-                    // Default sorting (by ID)
                     cars = cars.OrderBy(c => c.CarId);
                     break;
             }
@@ -105,7 +104,6 @@ namespace CarRental3._0.Controllers
         {
             var vm = new CarCreateViewModel
             {
-                // Populate the dropdown on GET
                 Locations = (await _locationService.GetAllLocationsAsync())
                     .Select(l => new SelectListItem
                     {
@@ -132,7 +130,7 @@ namespace CarRental3._0.Controllers
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Validation failed: " +
+                _logger.LogWarning("Възникна грешка при валидацията: " +
                     string.Join(" | ", ModelState
                         .Where(kv => kv.Value.Errors.Any())
                         .Select(kv => $"{kv.Key}=[{string.Join(",", kv.Value.Errors.Select(e => e.ErrorMessage))}]")));
@@ -176,10 +174,9 @@ namespace CarRental3._0.Controllers
             }
             catch (Exception ex)
             {
-                // Log the error
-                _logger.LogError(ex, "Error creating car listing");
+                _logger.LogError(ex, "Грешка при създаването на оферта");
 
-                ModelState.AddModelError("", "An error occurred while creating the car listing");
+                ModelState.AddModelError("", "Възникна грешка при създаването на оферта");
                 vm.Locations = _context.Locations
                     .Select(l => new SelectListItem
                     {
@@ -326,8 +323,6 @@ namespace CarRental3._0.Controllers
                 isAdmin = User.Identity.IsAuthenticated && User.IsInRole("admin")
             }));
         }
-
-        // Luhn algorithm implementation
         private bool IsValidCreditCard(string cardNumber)
         {
             cardNumber = cardNumber.Replace(" ", "").Replace("-", "");
@@ -367,12 +362,10 @@ namespace CarRental3._0.Controllers
             {
                 return NotFound();
             }
-
-            // Check availability
             bool isAvailable = await _carRepository.IsCarAvailable(carId, rentalDate, returnDate);
             if (!isAvailable)
             {
-                TempData["Error"] = "This car is not available for the selected dates.";
+                TempData["Error"] = "Колата не е налична за избраните дати.";
                 return RedirectToAction("Detail", new { id = carId });
             }
 
@@ -396,7 +389,6 @@ namespace CarRental3._0.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Log all validation errors
                 var errors = ModelState
                     .Where(x => x.Value.Errors.Count > 0)
                     .Select(x => new { x.Key, x.Value.Errors })
@@ -421,7 +413,7 @@ namespace CarRental3._0.Controllers
             bool isAvailable = await _carRepository.IsCarAvailable(model.CarId, model.RentalDate, model.ReturnDate);
             if (!isAvailable)
             {
-                TempData["Error"] = "This car is no longer available for the selected dates.";
+                TempData["Error"] = "Колата вече не е налична за избраните дати.";
                 return RedirectToAction("Detail", new { id = model.CarId });
             }
 
@@ -436,11 +428,11 @@ namespace CarRental3._0.Controllers
                 TotalCost = model.TotalCost,
                 AppUserId = user.Id,
                 CarId = model.CarId,
-                PaymentDetails = $"Card ending in {model.CardNumber.Substring(model.CardNumber.Length - 4)}"
+                PaymentDetails = $"Картата завършваща на {model.CardNumber.Substring(model.CardNumber.Length - 4)}"
             };
 
             _context.Rentals.Add(rental);
-            carToRent.Status = "Rented";
+            carToRent.Status = "Наета";
             await _context.SaveChangesAsync();
 
             TempData["Success"] = "Колата е наета успешно! Плащането е проверено.";

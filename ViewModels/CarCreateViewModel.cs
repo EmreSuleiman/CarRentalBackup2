@@ -27,11 +27,7 @@ namespace CarRental3._0.ViewModels
         [Required(ErrorMessage = "Моля изберете локация")]
         [Display(Name = "Локация")]
         public int? LocationId { get; set; }
-
-        // ← No [Required] here, and ensure it's never null:
         public List<SelectListItem> Locations { get; set; } = new();
-
-        // File upload:
         [Required]
         public IFormFile Image { get; set; }
     }
