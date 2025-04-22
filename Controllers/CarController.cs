@@ -305,7 +305,7 @@ namespace CarRental3._0.Controllers
 
             if (!string.IsNullOrEmpty(car.Image))
             {
-                _imageService.DeletePhotoAsync(car.Image);
+                await _imageService.DeletePhotoAsync(car.Image);
             }
 
             _carRepository.Delete(car);
